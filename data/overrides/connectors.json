@@ -1,0 +1,7 @@
+{
+  "_doc": "Koreksi lapangan untuk sambungan antar-lantai (eskalator/lift). Kunci = endpoint connector dari Mapplic (lihat data/build_log.json -> connectorEdges). disable: sambungan tidak ada di lapangan. oneway: 'up' = hanya naik, 'down' = hanya turun. Jalankan ulang: python3 tools/build_data.py && python3 tools/verify_routes.py",
+  "disable": {
+    "esc-a-penta-1": "Eskalator A Pentacity (depan Sociolla) hanya GF<->UG, tidak ke LG — temuan lapangan 4 Okt 2026"
+  },
+  "oneway": {}
+}

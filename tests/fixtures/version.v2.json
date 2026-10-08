@@ -1,0 +1,17 @@
+{
+ "directory": {
+  "version": "D0001-202610041200",
+  "sha256": null,
+  "url": "tests/fixtures/directory.v2.json",
+  "publishedAt": "2026-10-04T12:00:00+08:00"
+ },
+ "promos": {
+  "version": "P0001-202610041200",
+  "url": "tests/fixtures/promos.v2.json"
+ },
+ "status": {
+  "version": "S0001-202610041200",
+  "url": "tests/fixtures/status.v2.json"
+ },
+ "minAppBuild": null
+}

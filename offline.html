@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connecting… · e-Walk & Pentacity</title>
+  <!-- Served by sw.js when the server is unreachable and no cached app shell exists yet. Self-contained (no external files). -->
+  <style>
+    html, body { margin: 0; height: 100%; }
+    body { font-family: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif; background: #F5F1EB; color: #1D1A17;
+      display: flex; align-items: center; justify-content: center; text-align: center; -webkit-user-select: none; user-select: none; }
+    .card { max-width: 860px; padding: 48px; }
+    .dot { width: 22px; height: 22px; border-radius: 50%; background: #B8893B; margin: 0 auto 36px; animation: p 1.6s ease-in-out infinite; }
+    @keyframes p { 50% { transform: scale(1.6); opacity: .4; } }
+    h1 { font-size: 46px; margin: 0 0 14px; letter-spacing: -.02em; }
+    p { font-size: 22px; color: #4A433C; margin: 6px 0; line-height: 1.4; }
+    small { display: block; margin-top: 28px; font-size: 15px; color: #857B70; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="dot"></div>
+    <h1>e-Walk &amp; Pentacity</h1>
+    <p>Connecting to the directory server…</p>
+    <p>Menghubungkan ke server direktori…</p>
+    <small id="t">Retrying in 30 s · Mencoba lagi dalam 30 detik</small>
+  </div>
+  <script>
+    (function () {
+      var n = 30, el = document.getElementById('t');
+      function tick() {
+        n--;
+        if (n <= 0) { check(); n = 30; }
+        el.textContent = 'Retrying in ' + n + ' s · Mencoba lagi dalam ' + n + ' detik';
+      }
+      function check() {
+        // reload only when the server answers again (avoids reload loops while offline)
+        // HEAD is never answered by the Service Worker -> this really asks the server
+        fetch('index.html?probe=1', { cache: 'no-store', method: 'HEAD' })
+          .then(function (r) { if (r && r.status < 500) location.reload(); }).catch(function () {});
+      }
+      setInterval(tick, 1000);
+      addEventListener('online', check);
+    })();
+  </script>
+</body>
+</html>

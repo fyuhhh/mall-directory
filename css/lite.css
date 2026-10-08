@@ -1,0 +1,61 @@
+/*
+ * lite.css — reduced-effects profile for weak devices / smart-TV browsers (html.lite, set by js/perf.js).
+ * Loaded after base.css + kiosk.css. Rules outside `html.lite` are pure compatibility fallbacks for old Chromium (≈68).
+ */
+
+/* ---------- compatibility (any mode): `inset` = Chromium 87+, flex `gap` = Chromium 84+ ---------- */
+#app, #map, .view, .attract, .att-bg, .promo, .map-floors, .map-floor, .map-overlay, .notice-emg, .identify, .offline-scr,
+.promo-full, .promo-qr { top: 0; right: 0; bottom: 0; left: 0; }
+html.no-flexgap .row > * + *, html.no-flexgap .search > * + *, html.no-flexgap .toggle > * + *,
+html.no-flexgap .r-dest > * + *, html.no-flexgap .btn > * + *, html.no-flexgap .cat > * + *, html.no-flexgap .az-btn > * + *,
+html.no-flexgap .leg > * + *, html.no-flexgap .att-cta > * + *, html.no-flexgap .fc-n > * + * { margin-left: 14px; }
+html.no-flexgap .filters > * + *, html.no-flexgap .osk-quick > * + *, html.no-flexgap .att-track > * + * { margin-left: 10px; }
+html.no-flexgap .floor-switch > * + *, html.no-flexgap .r-actions > * + * { margin-top: 8px; }
+html.no-flexgap .fs-row > * + *, html.no-flexgap .krow > * + *, html.no-flexgap .lang-btn > * + * { margin-left: 6px; }
+
+/* ---------- lite profile ---------- */
+/* no blur / backdrop blur (very expensive on TV GPUs) */
+html.lite .floor-card, html.lite .floor-switch, html.lite .notice-bar { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+html.lite .floor-card { background: #fff; }
+html.lite .floor-switch { background: #fff; }
+html.lite .blob { display: none; }
+html.lite .att-bg { background: radial-gradient(70% 80% at 85% 10%, #F1E3C8 0%, transparent 60%), radial-gradient(60% 70% at 0% 100%, #E3E9FB 0%, transparent 60%); }
+
+/* box-shadow -> 1 px border (shadows force big repaints when things move) */
+html.lite .panel, html.lite .search, html.lite .cat, html.lite .az-btn, html.lite .amen-btn, html.lite .back-btn, html.lite .row,
+html.lite .d-card, html.lite .toggle, html.lite .btn-ghost, html.lite .r-dest, html.lite .qr-card, html.lite .floor-card,
+html.lite .floor-switch, html.lite .zoom button, html.lite .caption, html.lite .toast, html.lite .att-tile, html.lite .att-cta,
+html.lite .promo, html.lite .fs-btn.on, html.lite .lang-btn span.on, html.lite .stat, html.lite .osk, html.lite .notice-bar {
+  box-shadow: 0 0 0 1px var(--line-2) !important; }
+html.lite .btn-primary { box-shadow: none !important; }
+html.lite .sw::after { box-shadow: none; }
+html.lite .key { box-shadow: 0 0 0 1px #D2C8BA; }
+
+/* no gradient masks (each one is an offscreen layer) */
+html.lite .filters, html.lite .osk-quick, html.lite .d-scroll, html.lite .legs, html.lite .att-marquee {
+  -webkit-mask-image: none !important; mask-image: none !important; }
+
+/* map overlay: no SVG drop-shadow filters, no glow, no pulsing rings */
+html.lite .amen rect, html.lite .conn rect, html.lite .poi rect { filter: none !important; }
+html.lite .map-overlay [filter] { filter: none; }
+html.lite .r-glow { display: none; }
+html.lite .r-ants { animation: none; stroke-dasharray: none; opacity: 0 !important; }
+html.lite .yah-pulse { animation: none; opacity: .18; transform: scale(1.6); }
+html.lite .unit-hl { animation: none; fill-opacity: .45; }
+html.lite .map-stage.moving svg { shape-rendering: optimizeSpeed; text-rendering: optimizeSpeed; }
+html.lite .map-stage { background: #EFE9E0; }
+
+/* attract marquee: static, paged grid (js swaps pages every 6 s) */
+html.lite .att-track { position: relative; left: auto; top: 10px; flex-wrap: nowrap; justify-content: center; width: 100%; transform: none !important; }
+html.lite .att-tile { background: #fff; }
+
+/* bigger touch targets for single-touch / IR frames (>= 56 px) */
+html.lite .chip { min-height: 60px; }
+html.lite .legs:not(.multi) .leg { min-height: 60px; }
+
+/* never rely on hover on TVs */
+html.lite *:hover { transition: none; }
+
+/* transitions: shorter */
+html.lite .osk { transition-duration: .2s; }
+html.lite .leg, html.lite .leg-n, html.lite .fs-btn, html.lite .sw, html.lite .sw::after, html.lite .lang-btn span { transition: none !important; }

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#F5F1EB">
+  <title>Navigasi · e-Walk & Pentacity</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/phone.css">
+  <script src="../config.js"></script>
+</head>
+<body class="phone">
+  <header class="ph-head">
+    <div class="ph-brand"><div class="lockup lk-phone" role="img" aria-label="e-Walk &amp; Pentacity"><img src="../assets/brand/ewalk.webp" alt=""><i></i><img src="../assets/brand/pentacity.webp" alt=""></div>
+      <button class="ph-lang" id="langBtn" type="button">EN</button></div>
+    <div class="ph-dest" id="dest"></div>
+  </header>
+
+  <!-- START -->
+  <section class="scr" id="scrStart">
+    <div class="sum" id="summary"></div>
+    <div class="mini" id="mapStart"></div>
+    <h3 class="ph-sec" data-i18n="steps">Langkah-langkah</h3>
+    <ol class="steps" id="stepsStart"></ol>
+    <div class="dock">
+      <button class="pbtn primary" id="startBtn" type="button"><span data-icon="navigation"></span><span data-i18n="startNav">Mulai Navigasi</span></button>
+      <p class="dock-note" data-i18n="startNavSub"></p>
+    </div>
+  </section>
+
+  <!-- NAV -->
+  <section class="scr" id="scrNav" hidden>
+    <div class="guide">
+      <div class="dial" id="dial">
+        <div class="dial-ring"></div>
+        <svg class="arrow" id="arrow" viewBox="0 0 100 100"><path d="M50 8 L80 86 L50 70 L20 86 Z"/></svg>
+        <div class="dial-n">N</div>
+      </div>
+      <div class="g-dist"><span id="gDist">–</span><small> m</small></div>
+      <div class="g-sub" id="gSub"></div>
+      <div class="g-txt" id="gTxt"></div>
+      <div class="g-mode" id="gMode"></div>
+      <button class="calib-btn" id="calibBtn" type="button" hidden><span data-icon="compass"></span><span id="calibLbl"></span></button>
+    </div>
+    <div class="mini nav-map" id="mapNav"></div>
+    <div class="ctrls">
+      <button class="pbtn ghost sq" id="prevBtn" type="button" aria-label="prev"><span data-icon="chevron-left"></span></button>
+      <button class="pbtn primary" id="hereBtn" type="button"><span data-icon="check"></span><span data-i18n="arrivedHere">Sudah sampai sini</span></button>
+    </div>
+    <div class="prog" id="prog"></div>
+    <details class="all-steps"><summary data-i18n="steps">Langkah-langkah</summary><ol class="steps" id="stepsNav"></ol></details>
+
+    <!-- floor change -->
+    <div class="sheet" id="floorSheet" hidden>
+      <div class="sheet-card">
+        <div class="fl-ic" id="flIc"></div>
+        <div class="fl-k" id="flK"></div>
+        <div class="fl-t" id="flT"></div>
+        <div class="fl-seq" id="flSeq" hidden style="margin:-4px 0 16px;display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:wrap;color:var(--muted);font-weight:700"></div>
+        <button class="pbtn primary" id="flBtn" type="button"></button>
+        <button class="pbtn ghost" id="flBack" type="button" data-i18n="prev">Sebelumnya</button>
+      </div>
+    </div>
+    <!-- calibration -->
+    <div class="sheet" id="calSheet" hidden>
+      <div class="sheet-card">
+        <div class="fl-ic"><span data-icon="compass"></span></div>
+        <div class="fl-k" data-i18n="calibrateTitle"></div>
+        <div class="fl-t" id="calBody"></div>
+        <button class="pbtn primary" id="calSave" type="button" data-i18n="calibrateBtn"></button>
+        <button class="pbtn ghost" id="calCancel" type="button" data-i18n="close"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARRIVED -->
+  <section class="scr" id="scrDone" hidden>
+    <div class="done">
+      <div class="done-badge"><i></i><i></i><span data-icon="check"></span></div>
+      <h2 data-i18n="arrived">Anda sudah sampai!</h2>
+      <p><span data-i18n="arrivedSub"></span><br><b id="doneName"></b></p>
+      <div class="done-logo" id="doneLogo"></div>
+      <button class="pbtn primary" id="doneBtn" type="button" data-i18n="done">Selesai</button>
+      <button class="pbtn ghost" id="restartBtn" type="button" data-i18n="restart">Ulangi rute</button>
+    </div>
+  </section>
+
+  <section class="scr" id="scrErr" hidden><div class="done"><h2 id="errTxt"></h2></div></section>
+
+  <script src="../assets/vendor/gsap.min.js"></script>
+  <script src="../js/icons.js"></script>
+  <script src="../js/i18n.js"></script>
+  <script src="../js/data.js"></script>
+  <script src="../js/route.js"></script>
+  <script src="../js/map.js"></script>
+  <script src="../js/phone.js"></script>
+  <script>
+    (function () {
+      var c = window.BSB_CONFIG || {};
+      if (!('serviceWorker' in navigator) || !window.isSecureContext || c.serviceWorker === false) return;
+      addEventListener('load', function () {
+        navigator.serviceWorker.register('../sw.js?v=' + encodeURIComponent(c.APP_BUILD || 'dev'), { scope: '../' }).catch(function () {});
+      });
+    })();
+  </script>
+</body>
+</html>

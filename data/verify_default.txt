@@ -1,0 +1,47 @@
+== verify_routes  mode=DEFAULT
+   floors=8 tenants=210 kiosks=7 nodes=614 edges=672
+   contract checks OK (ids, floors, viewBox bounds, categories, https urls)
+
+   reachable kiosk->tenant pairs: 1470/1470 = 100.0%
+   tenants reachable from ALL kiosks: 210/210
+
+   tenant->kiosk unreachable pairs (return trip): 0
+
+   SAMPLE ROUTES
+    lg-pentacity (LG) -> Embassy (Lower Ground · E-Walk): cost 567, 37 nodes
+        · lift: Lower Ground · Pentacity -> Ground Floor
+        · escalator-down: Ground Floor -> Lower Ground · E-Walk
+    gf-ewalk-left (GF) -> Payless · Pentacity (Upper Ground): cost 529, 50 nodes
+        · escalator-up: Ground Floor -> Upper Ground
+    gf-ewalk-right (GF) -> Payless · Pentacity (Upper Ground): cost 602, 61 nodes
+        · escalator-up: Ground Floor -> Upper Ground
+    gf-pentacity (GF) -> Embassy (Lower Ground · E-Walk): cost 641, 39 nodes
+        · escalator-down: Ground Floor -> Lower Ground · E-Walk
+    ug-ewalk (UG) -> Kiddy Hope (Lower Ground · Pentacity): cost 446, 40 nodes
+        · escalator-down: Upper Ground -> Ground Floor
+        · lift: Ground Floor -> Lower Ground · Pentacity
+    ug-pentacity (UG) -> Embassy (Lower Ground · E-Walk): cost 444, 34 nodes
+        · escalator-down: Upper Ground -> Ground Floor
+        · escalator-down: Ground Floor -> Lower Ground · E-Walk
+    ff-pentacity (1F) -> Embassy (Lower Ground · E-Walk): cost 601, 43 nodes
+        · crossing: First Floor · Pentacity -> First Floor · E-Walk
+        · escalator-down: First Floor · E-Walk -> Upper Ground
+        · escalator-down: Upper Ground -> Ground Floor
+        · escalator-down: Ground Floor -> Lower Ground · E-Walk
+    lg-pentacity (LG) -> Cinema XXI · Pentacity (Second Floor · Pentacity): cost 228, 20 nodes
+        · escalator-up: Lower Ground · Pentacity -> Ground Floor
+        · escalator-up: Ground Floor -> Upper Ground
+        · escalator-up: Upper Ground -> First Floor · Pentacity
+        · escalator-up: First Floor · Pentacity -> Second Floor · Pentacity
+    gf-ewalk-left (GF) -> Buttonscarves (Upper Ground): cost 319, 35 nodes
+        · escalator-up: Ground Floor -> Upper Ground
+    gf-ewalk-right (GF) -> OUR Self Studio (First Floor · Pentacity): cost 389, 35 nodes
+        · escalator-up: Ground Floor -> Upper Ground
+        · escalator-up: Upper Ground -> First Floor · E-Walk
+        · crossing: First Floor · E-Walk -> First Floor · Pentacity
+    gf-pentacity (GF) -> Beautique Hair Atelier (First Floor · Pentacity): cost 207, 23 nodes
+        · escalator-up: Ground Floor -> Upper Ground
+        · escalator-up: Upper Ground -> First Floor · Pentacity
+    ug-ewalk (UG) -> Ichiban Sushi (Lower Ground · Pentacity): cost 286, 28 nodes
+        · escalator-down: Upper Ground -> Ground Floor
+        · lift: Ground Floor -> Lower Ground · Pentacity

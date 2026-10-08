@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Masuk · CMS Direktori e-Walk &amp; Pentacity</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/admin.css">
+  <script type="module" src="js/login.js"></script>
+</head>
+<body>
+  <div class="login-wrap">
+    <div class="login-card" id="card">
+      <div class="lockup" role="img" aria-label="e-Walk &amp; Pentacity"><img src="../assets/brand/ewalk.webp" alt=""><i></i><img src="../assets/brand/pentacity.webp" alt=""></div>
+      <h1 id="ttl">Masuk ke CMS Direktori</h1>
+      <p class="sub" id="sub">Kelola tenant, peta, eskalator &amp; promo kiosk.</p>
+      <form id="f" class="form" novalidate>
+        <div class="field" data-field="email"><label for="email">Email</label><input class="inp" id="email" name="email" type="email" autocomplete="username" required autofocus><div class="err" hidden></div></div>
+        <div class="field" data-field="password"><label for="password">Password</label><input class="inp" id="password" name="password" type="password" autocomplete="current-password" required><div class="err" hidden></div></div>
+        <div class="callout danger" id="msg" hidden></div>
+        <button class="btn primary" type="submit" id="go">Masuk</button>
+      </form>
+      <p class="login-foot" id="foot">Balikpapan Superblock · PT WBL</p>
+    </div>
+  </div>
+</body>
+</html>

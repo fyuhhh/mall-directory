@@ -1,0 +1,1 @@
+{"candidateVersion":"P0004-202610041015","diff":{"promos":{"promos":{"added":[14],"removed":[],"changed":[{"id":13,"fields":["targets"]}]},"events":{"added":[],"removed":[],"changed":[]},"featured":{"changed":true}}},"sectionsChanged":["promos"],"validation":{"ok":true,"errors":[],"warnings":[]},"canPublish":true,"blockers":[]}

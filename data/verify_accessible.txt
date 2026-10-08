@@ -1,0 +1,28 @@
+== verify_routes  mode=ACCESSIBLE (lift / crossing only)
+   floors=8 tenants=210 kiosks=7 nodes=614 edges=672
+   contract checks OK (ids, floors, viewBox bounds, categories, https urls)
+
+   reachable kiosk->tenant pairs: 1449/1470 = 98.6%
+   tenants reachable from ALL kiosks: 207/210
+
+   UNREACHABLE (tenant <- kiosks that cannot reach it):
+    - cinema-xxi-sf-ewalk                    [sf-ewalk] from 7/7: lg-pentacity, gf-ewalk-left, gf-ewalk-right, gf-pentacity, ug-ewalk, ug-pentacity, ff-pentacity
+    - grand-jatra-hotel-sf-ewalk             [sf-ewalk] from 7/7: lg-pentacity, gf-ewalk-left, gf-ewalk-right, gf-pentacity, ug-ewalk, ug-pentacity, ff-pentacity
+    - matahari-sf-ewalk                      [sf-ewalk] from 7/7: lg-pentacity, gf-ewalk-left, gf-ewalk-right, gf-pentacity, ug-ewalk, ug-pentacity, ff-pentacity
+
+   tenant->kiosk unreachable pairs (return trip): 21
+
+   SAMPLE ROUTES
+    lg-pentacity (LG) -> Embassy (Lower Ground · E-Walk): cost 659, 45 nodes
+        · lift: Lower Ground · Pentacity -> Ground Floor
+        · lift: Ground Floor -> Lower Ground · E-Walk
+    gf-ewalk-left (GF) -> Payless · Pentacity (Upper Ground): cost 591, 49 nodes
+        · lift: Ground Floor -> Upper Ground
+    gf-ewalk-right (GF) -> Payless · Pentacity (Upper Ground): cost 654, 62 nodes
+        · lift: Ground Floor -> Upper Ground
+    gf-pentacity (GF) -> Embassy (Lower Ground · E-Walk): cost 732, 47 nodes
+        · lift: Ground Floor -> Lower Ground · E-Walk
+    lg-pentacity (LG) -> Executive & Colorbox (Ground Floor): cost 263, 12 nodes
+        · lift: Lower Ground · Pentacity -> Ground Floor
+    gf-ewalk-left (GF) -> Dapur Solo (Lower Ground · Pentacity): cost 399, 30 nodes
+        · lift: Ground Floor -> Lower Ground · Pentacity

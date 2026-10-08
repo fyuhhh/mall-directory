@@ -1,0 +1,2483 @@
+{
+ "routes": {
+  "total": 544,
+  "realLayer": 351,
+  "ghostOrEmpty": 193
+ },
+ "tJunctions": [
+  {
+   "node": "n497",
+   "floor": "gf",
+   "splitEdge": [
+    "n498",
+    "n525"
+   ]
+  },
+  {
+   "node": "n507",
+   "floor": "gf",
+   "splitEdge": [
+    "n410",
+    "n524"
+   ]
+  },
+  {
+   "node": "n584",
+   "floor": "ug",
+   "splitEdge": [
+    "n269",
+    "n585"
+   ]
+  },
+  {
+   "node": "n587",
+   "floor": "ff-ewalk",
+   "splitEdge": [
+    "n188",
+    "n589"
+   ]
+  },
+  {
+   "node": "n597",
+   "floor": "ff-ewalk",
+   "splitEdge": [
+    "n176",
+    "n596"
+   ]
+  }
+ ],
+ "unitScale": [
+  {
+   "floor": "lg-penta",
+   "ref": "gf",
+   "banks": [
+    "esc-a-penta",
+    "esc-b-penta",
+    "lift-penta"
+   ],
+   "ratios": [
+    0.49,
+    0.675,
+    0.116
+   ]
+  },
+  {
+   "floor": "lg-ewalk",
+   "ref": "gf",
+   "banks": [
+    "esc-a-ewalk",
+    "lift-ewalk"
+   ],
+   "ratios": [
+    0.36
+   ]
+  },
+  {
+   "floor": "ff-penta",
+   "ref": "ug",
+   "banks": [
+    "esc-a-penta",
+    "esc-b-penta",
+    "lift-penta"
+   ],
+   "ratios": [
+    0.374,
+    0.277,
+    0.099
+   ]
+  },
+  {
+   "floor": "ff-ewalk",
+   "ref": "ug",
+   "banks": [
+    "esc-a-ewalk",
+    "lift-ewalk",
+    "esc-b-ewalk"
+   ],
+   "ratios": [
+    0.287,
+    0.265,
+    0.154
+   ]
+  },
+  {
+   "floor": "sf-penta",
+   "ref": "ug",
+   "banks": [
+    "esc-a-penta",
+    "esc-b-penta",
+    "lift-penta"
+   ],
+   "ratios": [
+    0.238,
+    0.193,
+    0.093
+   ]
+  },
+  {
+   "floor": "sf-ewalk",
+   "ref": "ug",
+   "banks": [
+    "esc-a-ewalk"
+   ],
+   "ratios": []
+  }
+ ],
+ "unitScaleFallback": [
+  "sf-ewalk"
+ ],
+ "ghostConnectors": [
+  {
+   "route": "lift-gf-penta",
+   "endpoint": "lift-penta",
+   "layer": "gf-pentacity"
+  },
+  {
+   "route": "lift-ug-penta",
+   "endpoint": "lift-penta",
+   "layer": "ug-penta"
+  },
+  {
+   "route": "lift-ug-ewalk1",
+   "endpoint": "lift-ewalk",
+   "layer": "ug-ewalk"
+  },
+  {
+   "route": "lift-gf-ewalk",
+   "endpoint": "lift-ewalk",
+   "layer": "gf-ewalk"
+  },
+  {
+   "route": "cross-gf",
+   "endpoint": "cross-gf",
+   "layer": "gf-ewalk"
+  },
+  {
+   "route": "cross-gf-penta",
+   "endpoint": "cross-gf",
+   "layer": "gf-pentacity"
+  },
+  {
+   "route": "cross-ug-ewalk",
+   "endpoint": "cross-ug",
+   "layer": "ug-ewalk"
+  },
+  {
+   "route": "cross-ug-penta",
+   "endpoint": "cross-ug",
+   "layer": "ug-penta"
+  },
+  {
+   "route": "escbewalk-2",
+   "endpoint": "escb-ewalk-1",
+   "layer": "gf-ewalk"
+  },
+  {
+   "route": "escbewalk-3",
+   "endpoint": "escb-ewalk-2",
+   "layer": "gf-ewalk"
+  },
+  {
+   "route": "escaewalk-1",
+   "endpoint": "esca-ewalk-2",
+   "layer": "gf-ewalk"
+  },
+  {
+   "route": "esccewalk-1",
+   "endpoint": "escc-ewalk-2",
+   "layer": "gf-ewalk"
+  },
+  {
+   "route": "escaewalk-2",
+   "endpoint": "esca-ewalk-2",
+   "layer": "ug-ewalk"
+  },
+  {
+   "route": "escaewalk-3",
+   "endpoint": "esca-ewalk-3",
+   "layer": "ug-ewalk"
+  },
+  {
+   "route": "escbewalk-4",
+   "endpoint": "escb-ewalk-2",
+   "layer": "ug-ewalk"
+  },
+  {
+   "route": "escbewalk-5",
+   "endpoint": "escb-ewalk-3",
+   "layer": "ug-ewalk"
+  },
+  {
+   "route": "esccewalk-3",
+   "endpoint": "escc-ewalk-2",
+   "layer": "ug-ewalk"
+  },
+  {
+   "route": "esccewalk-4",
+   "endpoint": "escc-ewalk-3",
+   "layer": "ug-ewalk"
+  },
+  {
+   "route": "escbpenta-2",
+   "endpoint": "escb-penta-1",
+   "layer": "gf-pentacity"
+  },
+  {
+   "route": "escbpenta-3",
+   "endpoint": "escb-penta-2",
+   "layer": "gf-pentacity"
+  },
+  {
+   "route": "esccpenta-2",
+   "endpoint": "escc-penta-1",
+   "layer": "gf-pentacity"
+  },
+  {
+   "route": "esccpenta-3",
+   "endpoint": "escc-penta-2",
+   "layer": "gf-pentacity"
+  },
+  {
+   "route": "escbpenta-4",
+   "endpoint": "escb-penta-2",
+   "layer": "ug-penta"
+  },
+  {
+   "route": "escbpenta-5",
+   "endpoint": "escb-penta-3",
+   "layer": "ug-penta"
+  },
+  {
+   "route": "esccpenta-4",
+   "endpoint": "escc-penta-2",
+   "layer": "ug-penta"
+  },
+  {
+   "route": "esccpenta-5",
+   "endpoint": "escc-penta-3",
+   "layer": "ug-penta"
+  }
+ ],
+ "connectorOverrides": {
+  "disabled": [
+   "esc-a-penta-1"
+  ],
+  "oneway": {},
+  "unknown": []
+ },
+ "connectorEdges": [
+  {
+   "endpoint": "cross-ff",
+   "type": "crossing",
+   "a": "ff-ewalk",
+   "b": "ff-penta",
+   "cost": 0.0,
+   "srcWeight": null
+  },
+  {
+   "endpoint": "esc-a-ewalk-1",
+   "type": "escalator",
+   "a": "lg-ewalk",
+   "b": "gf",
+   "cost": 19.2,
+   "srcWeight": [
+    10.0,
+    10.0
+   ]
+  },
+  {
+   "endpoint": "esc-a-ewalk-2",
+   "type": "escalator",
+   "a": "gf",
+   "b": "ug",
+   "cost": 19.2,
+   "srcWeight": [
+    10.0,
+    10.0
+   ]
+  },
+  {
+   "endpoint": "esc-a-ewalk-3",
+   "type": "escalator",
+   "a": "ug",
+   "b": "ff-ewalk",
+   "cost": 19.2,
+   "srcWeight": [
+    10.0,
+    10.0
+   ]
+  },
+  {
+   "endpoint": "esc-a-ewalk-4",
+   "type": "escalator",
+   "a": "ff-ewalk",
+   "b": "sf-ewalk",
+   "cost": 19.2,
+   "srcWeight": [
+    10.0,
+    10.0
+   ]
+  },
+  {
+   "endpoint": "esc-a-penta-2",
+   "type": "escalator",
+   "a": "gf",
+   "b": "ug",
+   "cost": 19.2,
+   "srcWeight": [
+    10.0,
+    10.0
+   ]
+  },
+  {
+   "endpoint": "esc-a-penta-3",
+   "type": "escalator",
+   "a": "ug",
+   "b": "ff-penta",
+   "cost": 28.8,
+   "srcWeight": [
+    10.0,
+    20.0
+   ]
+  },
+  {
+   "endpoint": "esc-a-penta-4",
+   "type": "escalator",
+   "a": "ff-penta",
+   "b": "sf-penta",
+   "cost": 28.8,
+   "srcWeight": [
+    20.0,
+    10.0
+   ]
+  },
+  {
+   "endpoint": "esc-b-ewalk-2",
+   "type": "escalator",
+   "a": "gf",
+   "b": "ug",
+   "cost": 19.2,
+   "srcWeight": [
+    10.0,
+    10.0
+   ]
+  },
+  {
+   "endpoint": "esc-b-ewalk-3",
+   "type": "escalator",
+   "a": "ug",
+   "b": "ff-ewalk",
+   "cost": 19.2,
+   "srcWeight": [
+    10.0,
+    10.0
+   ]
+  },
+  {
+   "endpoint": "esc-b-penta-1",
+   "type": "escalator",
+   "a": "lg-penta",
+   "b": "gf",
+   "cost": 19.2,
+   "srcWeight": [
+    10.0,
+    10.0
+   ]
+  },
+  {
+   "endpoint": "esc-b-penta-2",
+   "type": "escalator",
+   "a": "gf",
+   "b": "ug",
+   "cost": 19.2,
+   "srcWeight": [
+    10.0,
+    10.0
+   ]
+  },
+  {
+   "endpoint": "esc-b-penta-3",
+   "type": "escalator",
+   "a": "ug",
+   "b": "ff-penta",
+   "cost": 19.2,
+   "srcWeight": [
+    10.0,
+    10.0
+   ]
+  },
+  {
+   "endpoint": "esc-b-penta-4",
+   "type": "escalator",
+   "a": "ff-penta",
+   "b": "sf-penta",
+   "cost": 19.2,
+   "srcWeight": [
+    10.0,
+    10.0
+   ]
+  },
+  {
+   "endpoint": "esc-c-ewalk-2",
+   "type": "escalator",
+   "a": "gf",
+   "b": "ug",
+   "cost": 19.2,
+   "srcWeight": [
+    10.0,
+    10.0
+   ]
+  },
+  {
+   "endpoint": "esc-c-penta-4",
+   "type": "escalator",
+   "a": "ff-penta",
+   "b": "sf-penta",
+   "cost": 19.2,
+   "srcWeight": [
+    10.0,
+    10.0
+   ]
+  },
+  {
+   "endpoint": "lift-ewalk",
+   "type": "lift",
+   "a": "lg-ewalk",
+   "b": "gf",
+   "cost": 38.4,
+   "srcWeight": [
+    5.0,
+    5.0
+   ]
+  },
+  {
+   "endpoint": "lift-ewalk",
+   "type": "lift",
+   "a": "gf",
+   "b": "ug",
+   "cost": 38.4,
+   "srcWeight": [
+    5.0,
+    5.0
+   ]
+  },
+  {
+   "endpoint": "lift-ewalk",
+   "type": "lift",
+   "a": "ug",
+   "b": "ff-ewalk",
+   "cost": 38.4,
+   "srcWeight": [
+    5.0,
+    5.0
+   ]
+  },
+  {
+   "endpoint": "lift-penta",
+   "type": "lift",
+   "a": "lg-penta",
+   "b": "gf",
+   "cost": 38.4,
+   "srcWeight": [
+    2.0,
+    2.0
+   ]
+  },
+  {
+   "endpoint": "lift-penta",
+   "type": "lift",
+   "a": "gf",
+   "b": "ug",
+   "cost": 38.4,
+   "srcWeight": [
+    2.0,
+    2.0
+   ]
+  },
+  {
+   "endpoint": "lift-penta",
+   "type": "lift",
+   "a": "ug",
+   "b": "ff-penta",
+   "cost": 38.4,
+   "srcWeight": [
+    2.0,
+    2.0
+   ]
+  },
+  {
+   "endpoint": "lift-penta",
+   "type": "lift",
+   "a": "ff-penta",
+   "b": "sf-penta",
+   "cost": 38.4,
+   "srcWeight": [
+    2.0,
+    2.0
+   ]
+  }
+ ],
+ "danglingConnectors": [
+  {
+   "endpoint": "esc-b-ewalk-4",
+   "floors": [
+    "ff-ewalk"
+   ],
+   "routes": [
+    "esc-b-ewalk-5"
+   ]
+  },
+  {
+   "endpoint": "esc-c-ewalk-3",
+   "floors": [
+    "ug"
+   ],
+   "routes": [
+    "esc-c-ewalk-3"
+   ]
+  }
+ ],
+ "locations": {
+  "total": 304,
+  "realLayer": 219,
+  "ghostLayer": 85
+ },
+ "attachedByProjection": [
+  {
+   "what": "connector ['esc-b-ewalk-2']",
+   "floor": "gf",
+   "distPx": 1.58
+  },
+  {
+   "what": "connector ['esc-b-penta-2']",
+   "floor": "gf",
+   "distPx": 1.75
+  },
+  {
+   "what": "lg-pentacity",
+   "floor": "lg-penta",
+   "distPx": 8.02
+  },
+  {
+   "what": "Beard Papa's",
+   "floor": "gf",
+   "distPx": 4.7
+  },
+  {
+   "what": "Kopi Kenangan",
+   "floor": "gf",
+   "distPx": 1.13
+  },
+  {
+   "what": "Apartemen Aeropolis",
+   "floor": "gf",
+   "distPx": 15.66
+  },
+  {
+   "what": "Grand Jatra Hotel",
+   "floor": "sf-ewalk",
+   "distPx": 151.32
+  },
+  {
+   "what": "Matahari",
+   "floor": "sf-ewalk",
+   "distPx": 7.45
+  },
+  {
+   "what": "Cinema XXI",
+   "floor": "sf-ewalk",
+   "distPx": 228.31
+  }
+ ],
+ "singlePointRoutes": [
+  {
+   "tenant": "Beard Papa's",
+   "route": "p-BEARD PAPA' S",
+   "points": "666.8,357.04"
+  },
+  {
+   "tenant": "Kopi Kenangan",
+   "route": "p-Kopi Kenangan",
+   "points": "661.3,371.52"
+  },
+  {
+   "tenant": "Apartemen Aeropolis",
+   "route": "p-Apartemen Aeropolis",
+   "points": "568.5,463.2"
+  }
+ ],
+ "renamed": [
+  {
+   "srcId": "BEARD PAPA' S",
+   "before": "BEARD PAPA' S",
+   "after": "Beard Papa's"
+  },
+  {
+   "srcId": "TEA BREAK",
+   "before": "TEA BREAK",
+   "after": "Tea Break"
+  },
+  {
+   "srcId": "CAPTAIN GELATO",
+   "before": "CAPTAIN GELATO",
+   "after": "Captain Gelato"
+  },
+  {
+   "srcId": "BARRA'S  ",
+   "before": "BARRA'S  ",
+   "after": "Barra's"
+  },
+  {
+   "srcId": "ROTI  'O",
+   "before": "ROTI  'O",
+   "after": "Roti'O"
+  },
+  {
+   "srcId": "SHARE TEA  ",
+   "before": "SHARE TEA  ",
+   "after": "Share Tea"
+  },
+  {
+   "srcId": "COLL FROYO",
+   "before": "COLL FROYO",
+   "after": "Col's Froyo"
+  },
+  {
+   "srcId": "BAKSO BK ",
+   "before": "BAKSO BK ",
+   "after": "Bakso BK"
+  },
+  {
+   "srcId": "NEW STAR KOPITAM",
+   "before": "NEW STAR KOPITAM",
+   "after": "New Star Kopitiam"
+  },
+  {
+   "srcId": "ESSENTIALS  ",
+   "before": "ESSENTIALS",
+   "after": "Essentials"
+  },
+  {
+   "srcId": "STROBERI  ",
+   "before": "STROBERI  ",
+   "after": "Stroberi"
+  },
+  {
+   "srcId": "BAKOEL BAMBU  ",
+   "before": "BAKOEL BAMBU  ",
+   "after": "Bakoel Bamboe"
+  },
+  {
+   "srcId": "JAMU KULIT ",
+   "before": "JAWA KULIT ",
+   "after": "Java Kulit"
+  },
+  {
+   "srcId": "WACOAL ",
+   "before": "WACOAL ",
+   "after": "Wacoal"
+  },
+  {
+   "srcId": "LITTLE X.EIGHT  ",
+   "before": "LITTLE X.EIGHT  ",
+   "after": "Little X.Eight"
+  },
+  {
+   "srcId": "POLO  ",
+   "before": "POLO",
+   "after": "Polo"
+  },
+  {
+   "srcId": "LOGO  ",
+   "before": "LOGO  ",
+   "after": "Logo"
+  },
+  {
+   "srcId": "3SECOND ",
+   "before": "3SECOND ",
+   "after": "3Second"
+  },
+  {
+   "srcId": "Marrugame Udon   ",
+   "before": "Marrugame Udon",
+   "after": "Marugame Udon"
+  },
+  {
+   "srcId": "FUN Station  ",
+   "before": "FUN Station  ",
+   "after": "Fun Station"
+  },
+  {
+   "srcId": "GC STREET BBQ  ",
+   "before": "GC STREET BBQ  ",
+   "after": "GC Street BBQ"
+  },
+  {
+   "srcId": "wrangler  ",
+   "before": "wrangler  ",
+   "after": "Wrangler"
+  },
+  {
+   "srcId": "SOLARIA ",
+   "before": "SOLARIA ",
+   "after": "Solaria"
+  },
+  {
+   "srcId": "Pyaless Shoes - Ewalk",
+   "before": "Pyaless Shoes - Ewalk",
+   "after": "Payless"
+  },
+  {
+   "srcId": "Hok Ben ",
+   "before": "Hok Ben ",
+   "after": "HokBen"
+  },
+  {
+   "srcId": "Payles - Pentacty",
+   "before": "Payles - Pentacty",
+   "after": "Payless"
+  },
+  {
+   "srcId": "Planet Sport ",
+   "before": "Planet Sport",
+   "after": "Planet Sports"
+  },
+  {
+   "srcId": "SMIGGLE ",
+   "before": "SMIGGLE",
+   "after": "Smiggle"
+  },
+  {
+   "srcId": "JETE ",
+   "before": "JETE",
+   "after": "Jete"
+  },
+  {
+   "srcId": "Hush Pupies",
+   "before": "Hush Pupies",
+   "after": "Hush Puppies"
+  },
+  {
+   "srcId": "MI Store",
+   "before": "MI Store",
+   "after": "Xiaomi Store"
+  },
+  {
+   "srcId": "Optic Seis  ",
+   "before": "Optic Seis",
+   "after": "Optik Seis"
+  },
+  {
+   "srcId": "Asisc",
+   "before": "Asisc",
+   "after": "Asics"
+  },
+  {
+   "srcId": "Optic Tunggal ",
+   "before": "Optic Tunggal",
+   "after": "Optik Tunggal"
+  },
+  {
+   "srcId": "BOSE ",
+   "before": "BOSE",
+   "after": "Bose"
+  },
+  {
+   "srcId": "REDDOG ",
+   "before": "REDDOG",
+   "after": "Red Dog"
+  },
+  {
+   "srcId": "Shilin",
+   "before": "Shilin",
+   "after": "Shihlin"
+  },
+  {
+   "srcId": "Lilla Lable ",
+   "before": "Lilla Lable",
+   "after": "Lilla Label"
+  },
+  {
+   "srcId": "MR Miles",
+   "before": "MR Miles",
+   "after": "Mr Miles"
+  },
+  {
+   "srcId": "Samsung  ",
+   "before": "Samsung ",
+   "after": "Samsung Experience Store"
+  },
+  {
+   "srcId": " C & F ",
+   "before": " C & F ",
+   "after": "C&F"
+  },
+  {
+   "srcId": "Buttonscarve",
+   "before": "Buttonscarve",
+   "after": "Buttonscarves"
+  },
+  {
+   "srcId": "Ibox ",
+   "before": "Ibox",
+   "after": "iBox"
+  },
+  {
+   "srcId": "Erha ",
+   "before": "Location:Ground Floor",
+   "after": "Erha Apothecary"
+  },
+  {
+   "srcId": "Oh Some",
+   "before": "Oh Some",
+   "after": "OH!SOME"
+  },
+  {
+   "srcId": "Sports Station - Pentacty",
+   "before": "Sports Station - Pentacty",
+   "after": "Sports Station"
+  },
+  {
+   "srcId": "Shem ramen ",
+   "before": "Shem ramen ",
+   "after": "Shem Ramen"
+  },
+  {
+   "srcId": "Mississipi",
+   "before": "Mississipi",
+   "after": "Mississippi"
+  },
+  {
+   "srcId": "LEVI'S",
+   "before": "LEVI'S",
+   "after": "Levi's"
+  },
+  {
+   "srcId": "Moc",
+   "before": "Moc",
+   "after": "MOC"
+  },
+  {
+   "srcId": "Body Shop",
+   "before": "Body Shop",
+   "after": "The Body Shop"
+  },
+  {
+   "srcId": "Play works",
+   "before": "Play works",
+   "after": "Playworks"
+  },
+  {
+   "srcId": "BY AURA",
+   "before": "BY AURA",
+   "after": "By Aura"
+  },
+  {
+   "srcId": "Optic seis",
+   "before": "Optic seis",
+   "after": "Optik Seis"
+  },
+  {
+   "srcId": "Melawai",
+   "before": " Optic Melawai",
+   "after": "Optik Melawai"
+  },
+  {
+   "srcId": "C & f Perfume",
+   "before": "C & f Perfume",
+   "after": "C&F Perfume"
+  },
+  {
+   "srcId": "DIGIPLUS",
+   "before": "DIGIPLUS",
+   "after": "Digiplus"
+  },
+  {
+   "srcId": "Havainas",
+   "before": "Havainas",
+   "after": "Havaianas"
+  },
+  {
+   "srcId": "Fore",
+   "before": "Fore",
+   "after": "Fore Coffee"
+  },
+  {
+   "srcId": "H & M",
+   "before": "H & M",
+   "after": "H&M"
+  },
+  {
+   "srcId": "Shem Shushi",
+   "before": "Shem Shushi",
+   "after": "Shem Sushi"
+  },
+  {
+   "srcId": "Flaying Tiger",
+   "before": "Flaying Tiger",
+   "after": "Flying Tiger Copenhagen"
+  },
+  {
+   "srcId": "Bath & Bodywork",
+   "before": "Bath & Bodywork",
+   "after": "Bath & Body Works"
+  },
+  {
+   "srcId": "Frank",
+   "before": "Frank",
+   "after": "Frank & Co."
+  },
+  {
+   "srcId": "Blend & CO",
+   "before": "Blend & CO",
+   "after": "Blend & Co"
+  },
+  {
+   "srcId": "jatra",
+   "before": "Jatra Hotel",
+   "after": "Grand Jatra Hotel"
+  },
+  {
+   "srcId": "matahariewalk",
+   "before": "Matahari - Second Floor Ewalk",
+   "after": "Matahari"
+  },
+  {
+   "srcId": "xxiewalk1",
+   "before": "XXI - Second Floor Ewalk",
+   "after": "Cinema XXI"
+  },
+  {
+   "srcId": "xxiewalk",
+   "before": "XXI - First Floor Ewalk",
+   "after": "Cinema XXI"
+  },
+  {
+   "srcId": "matahari",
+   "before": "Matahari - First Floor Ewalk",
+   "after": "Matahari"
+  },
+  {
+   "srcId": "spilla",
+   "before": "Spilla Jewelery",
+   "after": "Spilla Jewelry"
+  },
+  {
+   "srcId": "gurdian",
+   "before": "Guardian - Pentacity",
+   "after": "Guardian"
+  },
+  {
+   "srcId": "dwidaya",
+   "before": "Dwidayatour",
+   "after": "Dwidaya Tour"
+  },
+  {
+   "srcId": "pentafoodavanue",
+   "before": "Penta Food Avanue",
+   "after": "Penta Food Avenue"
+  },
+  {
+   "srcId": "watsons",
+   "before": "Watsons - Pentacity",
+   "after": "Watsons"
+  },
+  {
+   "srcId": "andalas",
+   "before": "Andalas - FF",
+   "after": "Andalas"
+  },
+  {
+   "srcId": "funworld-",
+   "before": "Fun World - Pentacity",
+   "after": "Fun World"
+  },
+  {
+   "srcId": "mrdiy-sec",
+   "before": "MR.  D.I.Y - SC",
+   "after": "MR.DIY"
+  },
+  {
+   "srcId": "loc5",
+   "before": "FoodCourt - Second Floor",
+   "after": "Food Court"
+  },
+  {
+   "srcId": "xxi",
+   "before": "XXI - Pentacity",
+   "after": "Cinema XXI"
+  },
+  {
+   "srcId": "dcrepes",
+   "before": "D Crepes",
+   "after": "D'Crepes"
+  },
+  {
+   "srcId": "mrdiy_",
+   "before": "MR D.I.Y - LG",
+   "after": "MR.DIY"
+  },
+  {
+   "srcId": "solaria",
+   "before": "Solaria - Pentacity",
+   "after": "Solaria"
+  },
+  {
+   "srcId": "bakoelbambu",
+   "before": "Bakoel Bamboe - Pentacity",
+   "after": "Bakoel Bamboe"
+  },
+  {
+   "srcId": "kiddyhope",
+   "before": "KiddyHope",
+   "after": "Kiddy Hope"
+  }
+ ],
+ "urlChanges": [
+  {
+   "srcId": "TEA BREAK",
+   "name": "Tea Break",
+   "before": "http://www.teabreakindo.com/",
+   "after": "https://www.teabreakindo.com/",
+   "note": null
+  },
+  {
+   "srcId": "BARRA'S  ",
+   "name": "Barra's",
+   "before": "http://www.instagram.com/barraskitchen",
+   "after": "https://www.instagram.com/barraskitchen",
+   "note": null
+  },
+  {
+   "srcId": "ESSENTIALS  ",
+   "name": "Essentials",
+   "before": "https://fearofgod.com/en-id/collections/essentials?srsltid=AfmBOoqZCh_079c-fcirfME_UYm1FpQQlV1CSz4ePGpGfxvkZ0IGGfOL",
+   "after": "https://fearofgod.com/en-id/collections/essentials",
+   "note": null
+  },
+  {
+   "srcId": "WACOAL ",
+   "name": "Wacoal",
+   "before": "http://www.wacoal.co.id/",
+   "after": "https://www.wacoal.co.id/",
+   "note": null
+  },
+  {
+   "srcId": "Guardian  ",
+   "name": "Guardian",
+   "before": "http://www.guardianindonesia.co.id/",
+   "after": "https://guardianindonesia.co.id/",
+   "note": null
+  },
+  {
+   "srcId": "corcs",
+   "name": "Crocs",
+   "before": "http://www.crocs.web.id/",
+   "after": "https://www.crocs.co.id/",
+   "note": "manual override"
+  },
+  {
+   "srcId": "wrangler  ",
+   "name": "Wrangler",
+   "before": "https://wrangler.co.id/",
+   "after": null,
+   "note": "unreachable (https://wrangler.co.id/)"
+  },
+  {
+   "srcId": "Puma ",
+   "name": "Puma",
+   "before": "https://us.puma.com/",
+   "after": "https://id.puma.com/",
+   "note": "manual override"
+  },
+  {
+   "srcId": "Hok Ben ",
+   "name": "HokBen",
+   "before": "http://www.hokben.co.id/menu",
+   "after": "https://www.hokben.co.id/menu",
+   "note": null
+  },
+  {
+   "srcId": "Kidz Station  ",
+   "name": "Kidz Station",
+   "before": "http://www.kidzstation.asia/",
+   "after": null,
+   "note": "unreachable (http://www.kidzstation.asia/)"
+  },
+  {
+   "srcId": "Planet Sport ",
+   "name": "Planet Sports",
+   "before": "https://www.planetsports.asia/?utm_source=admitad&utm_medium=affiliate_cpc&utm_campaign=p1_psa_ecomm_webconv_id-en_sem_awo_affiliate&utm_content=2338640&utm_term=Cj0KCQiAubrJBhCbARIsAHIdxD_a10hYDf5l5QqCbhzEahJ5mFahOsC3rUQ0xfn1hkoZWMxsgqc9JfIaAqcoEALw_wcB&admitad_uid=Cj0KCQiAubrJBhCbARIsAHIdxD_a10hYDf5l5QqCbhzEahJ5mFahOsC3rUQ0xfn1hkoZWMxsgqc9JfIaAqcoEALw_wcB&gad_source=1&gad_campaignid=22881948656&gbraid=0AAAABBA1EiCNekviiwznKJmlSzZrWGGAc&gclid=Cj0KCQiAubrJBhCbARIsAHIdxD_a10hYDf5l5QqCbhzEahJ5mFahOsC3rUQ0xfn1hkoZWMxsgqc9JfIaAqcoEALw_wcB",
+   "after": "https://www.planetsports.asia/",
+   "note": null
+  },
+  {
+   "srcId": "JETE ",
+   "name": "Jete",
+   "before": "https://dorangadget.com/",
+   "after": "https://jete.id/",
+   "note": "manual override"
+  },
+  {
+   "srcId": "Hush Pupies",
+   "name": "Hush Puppies",
+   "before": "https://www.hushpuppies.com/",
+   "after": "https://hushpuppies.co.id/",
+   "note": "manual override"
+  },
+  {
+   "srcId": "New Balance",
+   "name": "New Balance",
+   "before": "https://www.newbalance.co.id/?gad_source=1&gad_campaignid=21265435406&gbraid=0AAAAAB3ERPaid5oimXzUInKSa18lGnRJ0&gclid=Cj0KCQiAubrJBhCbARIsAHIdxD_pK9okvY0VcAp-0CCibtwCdlUHmxJAlEjXJQYK0Z66G7x2xuuywEEaAhdjEALw_wcB",
+   "after": "https://www.newbalance.co.id/",
+   "note": null
+  },
+  {
+   "srcId": "MI Store",
+   "name": "Xiaomi Store",
+   "before": "https://instagram.com/xiaomi.pentacity?igshid=OGQ5ZDc2ODk2ZA==",
+   "after": "https://www.instagram.com/xiaomi.pentacity",
+   "note": null
+  },
+  {
+   "srcId": "Startime ",
+   "name": "Startime",
+   "before": "https://www.startime.co.id/",
+   "after": "https://startime.co.id/",
+   "note": null
+  },
+  {
+   "srcId": "GC Korean BBQ & Hotpot",
+   "name": "GC Korean BBQ & Hotpot",
+   "before": "http://www.bogakreasi.id/",
+   "after": "https://www.bogakreasi.id/",
+   "note": null
+  },
+  {
+   "srcId": "Erha ",
+   "name": "Erha Apothecary",
+   "before": "http://www.erha.co.id/",
+   "after": null,
+   "note": "manual override"
+  },
+  {
+   "srcId": "Our Daily Dose ",
+   "name": "Our Daily Dose",
+   "before": "http://ourdailydose.net/",
+   "after": "https://www.ourdailydose.net/",
+   "note": null
+  },
+  {
+   "srcId": "Giordano",
+   "name": "Giordano",
+   "before": "http://giordano.com/",
+   "after": "https://www.giordano.com/",
+   "note": "manual override"
+  },
+  {
+   "srcId": "Excelso",
+   "name": "Excelso",
+   "before": "http://excelso-coffee.com/",
+   "after": "https://excelso-coffee.com/",
+   "note": null
+  },
+  {
+   "srcId": "Body Shop",
+   "name": "The Body Shop",
+   "before": "(0542)7586881",
+   "after": null,
+   "note": "manual override"
+  },
+  {
+   "srcId": "Watsons ",
+   "name": "Watsons",
+   "before": "http://www.watsons.co.id/",
+   "after": "https://www.watsons.co.id/",
+   "note": "http->https"
+  },
+  {
+   "srcId": "J. Rep",
+   "name": "J. Rep",
+   "before": "http://www.jrepclothings.com/",
+   "after": "https://www.jrepclothings.com/",
+   "note": null
+  },
+  {
+   "srcId": "Everbest",
+   "name": "Everbest",
+   "before": "https://id.everbestshoes.com/",
+   "after": "https://everbestgroup.com/en-id",
+   "note": null
+  },
+  {
+   "srcId": "Watch Club",
+   "name": "Watch Club",
+   "before": "https://watchclub.co.id/en/stores",
+   "after": "https://watchclub.co.id/",
+   "note": "manual override"
+  },
+  {
+   "srcId": "Time Concept",
+   "name": "Time Concept",
+   "before": "https://instagram.com/watch_dealer.id?igshid=YTY2NzY3YTc=",
+   "after": "https://www.instagram.com/watch_dealer.id",
+   "note": null
+  },
+  {
+   "srcId": "The Palace",
+   "name": "The Palace",
+   "before": "http://thepalacejeweler.com/",
+   "after": "https://thepalacejeweler.com/",
+   "note": null
+  },
+  {
+   "srcId": "Kopi Kenangan",
+   "name": "Kopi Kenangan",
+   "before": "http://www.kopikenangan.com/",
+   "after": "https://kopikenangan.com/",
+   "note": null
+  },
+  {
+   "srcId": "Garmin",
+   "name": "Garmin",
+   "before": "https://www.instagram.com/garmin_pentacitybalikpapan?igsh=MXI1ajAzcThwamJ0Yw==",
+   "after": "https://www.instagram.com/garmin_pentacitybalikpapan",
+   "note": null
+  },
+  {
+   "srcId": "Fore",
+   "name": "Fore Coffee",
+   "before": "081211118456",
+   "after": null,
+   "note": "manual override"
+  },
+  {
+   "srcId": "H & M",
+   "name": "H&M",
+   "before": "https://www.hm.com/id?utm_source=google_location&utm_medium=organic&utm_campaign=ID0017",
+   "after": "https://www.hm.com/id",
+   "note": null
+  },
+  {
+   "srcId": "Bath & Bodywork",
+   "name": "Bath & Body Works",
+   "before": "http://www.bathandbodyworks.co.id/",
+   "after": "https://www.bathandbodyworks.co.id/",
+   "note": null
+  },
+  {
+   "srcId": "Starbucks",
+   "name": "Starbucks",
+   "before": "http://www.starbucks.co.id/",
+   "after": "https://www.starbucks.co.id/",
+   "note": "manual override"
+  },
+  {
+   "srcId": "Charles & Keith",
+   "name": "Charles & Keith",
+   "before": "https://www.charleskeith.co.id/id?utm_source=gmb&utm_medium=organic",
+   "after": "https://www.charleskeith.co.id/id",
+   "note": null
+  },
+  {
+   "srcId": "Frank",
+   "name": "Frank & Co.",
+   "before": "http://frankandcojewellery.com/",
+   "after": "https://frankandcojewellery.com/en",
+   "note": null
+  },
+  {
+   "srcId": "  Staccato",
+   "name": "Staccato",
+   "before": "http://www.staccato.com/",
+   "after": "https://www.staccato.com/",
+   "note": null
+  },
+  {
+   "srcId": "Blend & CO",
+   "name": "Blend & Co",
+   "before": "https://instagram.com/blendwinebalikpapan",
+   "after": "https://www.instagram.com/blendwinebalikpapan",
+   "note": null
+  },
+  {
+   "srcId": "jatra",
+   "name": "Grand Jatra Hotel",
+   "before": "http://www.jatrahotels.com/grandjatra-balikpapan",
+   "after": "https://jatrahotels.com/grandjatra-balikpapan/",
+   "note": null
+  },
+  {
+   "srcId": "matahariewalk",
+   "name": "Matahari",
+   "before": "http://www.matahari.co.id/",
+   "after": "https://matahari.com/",
+   "note": null
+  },
+  {
+   "srcId": "xxiewalk1",
+   "name": "Cinema XXI",
+   "before": "http://www.21cineplex.com/",
+   "after": "https://21cineplex.com/",
+   "note": null
+  },
+  {
+   "srcId": "xxiewalk",
+   "name": "Cinema XXI",
+   "before": "http://www.21cineplex.com/",
+   "after": "https://21cineplex.com/",
+   "note": null
+  },
+  {
+   "srcId": "matahari",
+   "name": "Matahari",
+   "before": "http://www.matahari.co.id/",
+   "after": "https://matahari.com/",
+   "note": null
+  },
+  {
+   "srcId": "christopher",
+   "name": "Christopher Salon",
+   "before": "http://www.christophersalon.id/",
+   "after": "https://christophersalon.id/",
+   "note": null
+  },
+  {
+   "srcId": "riamiranda",
+   "name": "Ria Miranda",
+   "before": "https://www.instagram.com/riamiranda.balikpapan?igsh=dHU0a2x3YjljYWJj",
+   "after": "https://www.instagram.com/riamiranda.balikpapan",
+   "note": null
+  },
+  {
+   "srcId": "footlabb",
+   "name": "Footlab Reflexology",
+   "before": "https://wa.me/6281995999822?text=Halo+Footlab+Reflexology,+saya+ingin+melakukan+pemesanan+layanan+refleksi.+Apakah+tersedia+jadwal+untuk+saat+ini?+",
+   "after": "https://api.whatsapp.com/send/?phone=6281995999822&text=Halo+Footlab+Reflexology%2C+saya+ingin+melakukan+pemesanan+layanan+refleksi.+Apakah+tersedia+jadwal+untuk+saat+ini%3F+&type=phone_number&app_absent=0",
+   "note": null
+  },
+  {
+   "srcId": "mercy",
+   "name": "The Mercy Clinic",
+   "before": "https://instagram.com/themercyclinic?igshid=MzRlODBiNWFlZA==",
+   "after": "https://www.instagram.com/themercyclinic",
+   "note": null
+  },
+  {
+   "srcId": "watsons",
+   "name": "Watsons",
+   "before": "http://www.watsons.co.id/",
+   "after": "https://www.watsons.co.id/",
+   "note": "http->https"
+  },
+  {
+   "srcId": "elc",
+   "name": "Early Learning Centre",
+   "before": "https://www.mothercare.co.id/toys.html?utm_source=GMB&utm_medium=Organic&utm_campaign=Brand_ELC_AO_GoogleMyBusiness&utm_content=PentacityBalikpapan",
+   "after": "https://www.mothercare.co.id/toys-activity/toys.html",
+   "note": null
+  },
+  {
+   "srcId": "mothercare",
+   "name": "Mothercare",
+   "before": "http://www.mothercare.co.id/?utm_source=GMB&utm_medium=Organic&utm_campaign=Brand_MC_AO_GoogleMyBusiness&utm_content=Pentacity",
+   "after": "https://www.mothercare.co.id/",
+   "note": null
+  },
+  {
+   "srcId": "gyukaku",
+   "name": "Gyu-Kaku",
+   "before": "https://gyu-kaku.id/",
+   "after": "https://official.gyu-kaku.id/",
+   "note": null
+  },
+  {
+   "srcId": "funworld-",
+   "name": "Fun World",
+   "before": "https://funworld.co.id/",
+   "after": "https://www.funworld.id/",
+   "note": null
+  },
+  {
+   "srcId": "mrdiy-sec",
+   "name": "MR.DIY",
+   "before": "http://www.mrdiy.com/id/",
+   "after": "https://www.mrdiy.com/id/",
+   "note": null
+  },
+  {
+   "srcId": "cocoland",
+   "name": "Cocoland",
+   "before": "http://www.cocoland.co.id/",
+   "after": "https://www.cocoland.co.id/",
+   "note": null
+  },
+  {
+   "srcId": "xxi",
+   "name": "Cinema XXI",
+   "before": "http://www.21cineplex.com/",
+   "after": "https://21cineplex.com/",
+   "note": null
+  },
+  {
+   "srcId": "mrdiy_",
+   "name": "MR.DIY",
+   "before": "http://www.mrdiy.com/id/",
+   "after": "https://www.mrdiy.com/id/",
+   "note": null
+  },
+  {
+   "srcId": "ichibansushi",
+   "name": "Ichiban Sushi",
+   "before": "http://www.ichibansushi.co.id/",
+   "after": "https://ichibansushi.co.id/",
+   "note": null
+  },
+  {
+   "srcId": "ramen1",
+   "name": "Ramen 1",
+   "before": "https://campsite.bio/ramen1",
+   "after": null,
+   "note": "unreachable (https://campsite.bio/ramen1)"
+  },
+  {
+   "srcId": "paperlunch",
+   "name": "Pepper Lunch",
+   "before": "http://pepperlunch.id/",
+   "after": "https://pepperlunch.id/",
+   "note": null
+  },
+  {
+   "srcId": "loc3",
+   "name": "Ta Wan",
+   "before": "http://tawanrestaurant.com/",
+   "after": "https://www.tawanrestaurant.com/",
+   "note": null
+  },
+  {
+   "srcId": "imperialkitchenanddimsum",
+   "name": "Imperial Kitchen & Dimsum",
+   "before": "http://www.impgroup.co.id/",
+   "after": "https://www.impgroup.co.id/",
+   "note": null
+  },
+  {
+   "srcId": "miniso",
+   "name": "Miniso",
+   "before": "https://pentacity-bsb.com/",
+   "after": "https://www.miniso.co.id/",
+   "note": "manual override"
+  },
+  {
+   "srcId": "yoshinoya",
+   "name": "Yoshinoya",
+   "before": "http://www.yoshinoya.co.id/menu.htm",
+   "after": null,
+   "note": "https version unreachable (000)"
+  }
+ ],
+ "whitespaceFixed": [
+  "BARRA'S  ",
+  "ROTI  'O",
+  "SHARE TEA  ",
+  "BAKSO BK ",
+  "ESSENTIALS  ",
+  "STROBERI  ",
+  "BAKOEL BAMBU  ",
+  "JAMU KULIT ",
+  "WACOAL ",
+  "LITTLE X.EIGHT  ",
+  "Guardian  ",
+  "POLO  ",
+  "Fisik Sport  ",
+  "New Era ",
+  "LOGO  ",
+  "3SECOND ",
+  "Marrugame Udon   ",
+  "FUN Station  ",
+  "GC STREET BBQ  ",
+  "wrangler  ",
+  "Skechers   ",
+  "Sports Station  - Ewalk ",
+  "Puma ",
+  "SOLARIA ",
+  "Hok Ben ",
+  "Kidz Station  ",
+  "Planet Sport ",
+  "Vans ",
+  "Birkenstock ",
+  "Steve Madden ",
+  "Samsonite ",
+  "SMIGGLE ",
+  "JETE ",
+  "Converse ",
+  "Andalas ",
+  "Skechers ",
+  "Adidas  ",
+  "Optic Seis  ",
+  "Optic Tunggal ",
+  "Manzone ",
+  "Startime ",
+  "BOSE ",
+  "Skinarma ",
+  "REDDOG ",
+  "Mixue ",
+  "Lego ",
+  "Lilla Lable ",
+  "Samsung  ",
+  " C & F ",
+  "Watch Club ",
+  "Ibox ",
+  "Erha ",
+  "Our Daily Dose ",
+  "Rookie ",
+  "Shem ramen ",
+  " Eprise",
+  "Starbucks ",
+  "Watsons ",
+  "Melawai",
+  "ET CATERA",
+  "Pandora ",
+  "  Staccato",
+  "Uniqlo - Pentacity ",
+  "mrdiy-sec"
+ ],
+ "categoryAdded": [
+  {
+   "srcId": "JAMU KULIT ",
+   "name": "Java Kulit",
+   "new": "fashion"
+  },
+  {
+   "srcId": "New Era ",
+   "name": "New Era",
+   "new": "fashion"
+  },
+  {
+   "srcId": "Skechers   ",
+   "name": "Skechers",
+   "new": "fashion"
+  },
+  {
+   "srcId": "Puma ",
+   "name": "Puma",
+   "new": "fashion"
+  },
+  {
+   "srcId": "Skechers ",
+   "name": "Skechers",
+   "new": "fashion"
+  },
+  {
+   "srcId": "Erha ",
+   "name": "Erha Apothecary",
+   "new": "beauty-health"
+  },
+  {
+   "srcId": "Everbest",
+   "name": "Everbest",
+   "new": "fashion"
+  },
+  {
+   "srcId": "Bath & Bodywork",
+   "name": "Bath & Body Works",
+   "new": "beauty-health"
+  },
+  {
+   "srcId": "Pedro",
+   "name": "Pedro",
+   "new": "fashion"
+  },
+  {
+   "srcId": "Charles & Keith",
+   "name": "Charles & Keith",
+   "new": "fashion"
+  },
+  {
+   "srcId": "sushitei",
+   "name": "Sushi Tei",
+   "new": "food-beverage"
+  },
+  {
+   "srcId": "rolaybbq",
+   "name": "Royal K-BBQ",
+   "new": "food-beverage"
+  }
+ ],
+ "dropped": [
+  {
+   "srcId": "Skechers  ",
+   "title": "Skechers",
+   "reason": "UG Pentacity has two \"Skechers\" markers; the old per-building map (ug-penta) has one, between Andalas and Adidas -> keep \"Skechers \" and drop this one (next to Planet Sports)."
+  },
+  {
+   "srcId": " GC KOREAN BBQ & HOTPOT",
+   "title": "GC KOREAN BBQ & HOTPOT",
+   "reason": "Second \"GC Korean BBQ & Hotpot\" marker 6 px from the first one on UG Pentacity -> merged."
+  }
+ ],
+ "recategorized": [
+  {
+   "srcId": "SMIGGLE ",
+   "name": "Smiggle",
+   "src": "FASHION & LIFESTYLE",
+   "new": "kids-family"
+  },
+  {
+   "srcId": "Skinarma ",
+   "name": "Skinarma",
+   "src": "FASHION & LIFESTYLE",
+   "new": "electronics"
+  },
+  {
+   "srcId": "Lego ",
+   "name": "Lego",
+   "src": "FASHION & LIFESTYLE",
+   "new": "kids-family"
+  },
+  {
+   "srcId": "DIGIPLUS",
+   "name": "Digiplus",
+   "src": "FOOD & BEVERAGES",
+   "new": "electronics"
+  },
+  {
+   "srcId": "Garmin",
+   "name": "Garmin",
+   "src": "FASHION & LIFESTYLE",
+   "new": "electronics"
+  },
+  {
+   "srcId": "Apartemen Aeropolis",
+   "name": "Apartemen Aeropolis",
+   "src": "FASHION & LIFESTYLE",
+   "new": "services"
+  },
+  {
+   "srcId": "Sociolla",
+   "name": "Sociolla",
+   "src": "FASHION & LIFESTYLE",
+   "new": "beauty-health"
+  },
+  {
+   "srcId": "Blend & CO",
+   "name": "Blend & Co",
+   "src": "HOTEL & TRAVEL",
+   "new": "food-beverage"
+  },
+  {
+   "srcId": "bauthaul",
+   "name": "BeautyHaul",
+   "src": "FASHION & LIFESTYLE",
+   "new": "beauty-health"
+  },
+  {
+   "srcId": "cnc",
+   "name": "CNC Fitness",
+   "src": "FASHION & LIFESTYLE",
+   "new": "beauty-health"
+  }
+ ],
+ "descFloorMismatch": [
+  {
+   "srcId": "xxiewalk1",
+   "name": "Cinema XXI",
+   "desc": "Location: First Floor",
+   "layerFloor": "Second Floor · E-Walk"
+  }
+ ],
+ "ghostDuplicate": [
+  "loc8",
+  "rotio",
+  "barras",
+  "colsfroyo",
+  "baksobk",
+  "newstar",
+  "stroberi",
+  "essentials",
+  "bakoelbamboe",
+  "jawakulit",
+  "wacoal",
+  "littlexeight",
+  "guardian",
+  "fisiksport",
+  "polo",
+  "newera",
+  "logo",
+  "crocs",
+  "3second",
+  "marugameudon",
+  "hokben",
+  "paylessshoes",
+  "solaria1",
+  "batikkeriss",
+  "puma",
+  "sportsstation",
+  "skechers1",
+  "wrangler",
+  "gcstreet",
+  "funstation",
+  "payless",
+  "kidzstation",
+  "jete",
+  "smiggle",
+  "loc7",
+  "footlocker",
+  "planetsports",
+  "vans",
+  "birkenstock",
+  "stevemadden",
+  "samsonite",
+  "batikkeris",
+  "nb",
+  "converse",
+  "andalas1",
+  "skechers",
+  "adidas",
+  "mistore",
+  "asics",
+  "opticseis",
+  "optictunggal",
+  "planetsurf",
+  "manzone",
+  "drspecs",
+  "dorangadget",
+  "startime",
+  "bose",
+  "skinarma",
+  "reddog",
+  "shihlin",
+  "mixue",
+  "lego",
+  "lolypolly",
+  "lillalabel",
+  "dcrepess",
+  "mrmiles",
+  "gckoreanbbq",
+  "samsung",
+  "candf",
+  "watchclub",
+  "benangjarum",
+  "buttonscarves",
+  "ibox",
+  "erha",
+  "our daily dose",
+  "rookie",
+  "ohsome",
+  "sportstasion",
+  "pandora",
+  "footlab",
+  "kidzooona",
+  "foodcourt",
+  "mrdiy",
+  "XXI_penta"
+ ],
+ "duplicateNamesKept": [
+  {
+   "name": "Col's Froyo",
+   "outlets": [
+    {
+     "srcId": "COLL FROYO",
+     "floor": "ug",
+     "building": "ewalk",
+     "display": "Col's Froyo · E-Walk"
+    },
+    {
+     "srcId": "Col's Froyo",
+     "floor": "gf",
+     "building": "pentacity",
+     "display": "Col's Froyo · Pentacity"
+    }
+   ]
+  },
+  {
+   "name": "Bakoel Bamboe",
+   "outlets": [
+    {
+     "srcId": "BAKOEL BAMBU  ",
+     "floor": "ug",
+     "building": "ewalk",
+     "display": "Bakoel Bamboe · E-Walk"
+    },
+    {
+     "srcId": "bakoelbambu",
+     "floor": "lg-penta",
+     "building": "pentacity",
+     "display": "Bakoel Bamboe · Pentacity"
+    }
+   ]
+  },
+  {
+   "name": "Guardian",
+   "outlets": [
+    {
+     "srcId": "Guardian  ",
+     "floor": "ug",
+     "building": "ewalk",
+     "display": "Guardian · E-Walk"
+    },
+    {
+     "srcId": "gurdian",
+     "floor": "ff-penta",
+     "building": "pentacity",
+     "display": "Guardian · Pentacity"
+    }
+   ]
+  },
+  {
+   "name": "Skechers",
+   "outlets": [
+    {
+     "srcId": "Skechers   ",
+     "floor": "ug",
+     "building": "ewalk",
+     "display": "Skechers · E-Walk"
+    },
+    {
+     "srcId": "Skechers ",
+     "floor": "ug",
+     "building": "pentacity",
+     "display": "Skechers · Pentacity"
+    }
+   ]
+  },
+  {
+   "name": "Sports Station",
+   "outlets": [
+    {
+     "srcId": "Sports Station  - Ewalk ",
+     "floor": "ug",
+     "building": "ewalk",
+     "display": "Sports Station · E-Walk"
+    },
+    {
+     "srcId": "Sports Station - Pentacty",
+     "floor": "ug",
+     "building": "pentacity",
+     "display": "Sports Station · Pentacity"
+    }
+   ]
+  },
+  {
+   "name": "Batik Keris",
+   "outlets": [
+    {
+     "srcId": "Batik Keris - Ewalk",
+     "floor": "ug",
+     "building": "ewalk",
+     "display": "Batik Keris · E-Walk"
+    },
+    {
+     "srcId": "Batik Keris",
+     "floor": "ug",
+     "building": "pentacity",
+     "display": "Batik Keris · Pentacity"
+    }
+   ]
+  },
+  {
+   "name": "Solaria",
+   "outlets": [
+    {
+     "srcId": "SOLARIA ",
+     "floor": "ug",
+     "building": "ewalk",
+     "display": "Solaria · E-Walk"
+    },
+    {
+     "srcId": "solaria",
+     "floor": "lg-penta",
+     "building": "pentacity",
+     "display": "Solaria · Pentacity"
+    }
+   ]
+  },
+  {
+   "name": "Payless",
+   "outlets": [
+    {
+     "srcId": "Pyaless Shoes - Ewalk",
+     "floor": "ug",
+     "building": "ewalk",
+     "display": "Payless · E-Walk"
+    },
+    {
+     "srcId": "Payles - Pentacty",
+     "floor": "ug",
+     "building": "pentacity",
+     "display": "Payless · Pentacity"
+    }
+   ]
+  },
+  {
+   "name": "Andalas",
+   "outlets": [
+    {
+     "srcId": "Andalas ",
+     "floor": "ug",
+     "building": "pentacity",
+     "display": "Andalas · Pentacity UG"
+    },
+    {
+     "srcId": "andalas",
+     "floor": "ff-penta",
+     "building": "pentacity",
+     "display": "Andalas · Pentacity 1F"
+    }
+   ]
+  },
+  {
+   "name": "Optik Seis",
+   "outlets": [
+    {
+     "srcId": "Optic Seis  ",
+     "floor": "ug",
+     "building": "pentacity",
+     "display": "Optik Seis · Pentacity"
+    },
+    {
+     "srcId": "Optic seis",
+     "floor": "gf",
+     "building": "ewalk",
+     "display": "Optik Seis · E-Walk"
+    }
+   ]
+  },
+  {
+   "name": "D'Crepes",
+   "outlets": [
+    {
+     "srcId": "D'Crepes",
+     "floor": "ug",
+     "building": "pentacity",
+     "display": "D'Crepes · Pentacity UG"
+    },
+    {
+     "srcId": "dcrepes",
+     "floor": "lg-penta",
+     "building": "pentacity",
+     "display": "D'Crepes · Pentacity LG"
+    }
+   ]
+  },
+  {
+   "name": "Watch Club",
+   "outlets": [
+    {
+     "srcId": "Watch Club ",
+     "floor": "ug",
+     "building": "pentacity",
+     "display": "Watch Club · Pentacity"
+    },
+    {
+     "srcId": "Watch Club",
+     "floor": "gf",
+     "building": "ewalk",
+     "display": "Watch Club · E-Walk"
+    }
+   ]
+  },
+  {
+   "name": "Shem Ramen",
+   "outlets": [
+    {
+     "srcId": "Shem ramen ",
+     "floor": "gf",
+     "building": "ewalk",
+     "display": "Shem Ramen · E-Walk"
+    },
+    {
+     "srcId": "Shem Ramen",
+     "floor": "gf",
+     "building": "pentacity",
+     "display": "Shem Ramen · Pentacity"
+    }
+   ]
+  },
+  {
+   "name": "Starbucks",
+   "outlets": [
+    {
+     "srcId": "Starbucks ",
+     "floor": "gf",
+     "building": "ewalk",
+     "display": "Starbucks · E-Walk"
+    },
+    {
+     "srcId": "Starbucks",
+     "floor": "gf",
+     "building": "pentacity",
+     "display": "Starbucks · Pentacity"
+    }
+   ]
+  },
+  {
+   "name": "Watsons",
+   "outlets": [
+    {
+     "srcId": "Watsons ",
+     "floor": "gf",
+     "building": "ewalk",
+     "display": "Watsons · E-Walk"
+    },
+    {
+     "srcId": "watsons",
+     "floor": "ff-penta",
+     "building": "pentacity",
+     "display": "Watsons · Pentacity"
+    }
+   ]
+  },
+  {
+   "name": "Matahari",
+   "outlets": [
+    {
+     "srcId": "matahariewalk",
+     "floor": "sf-ewalk",
+     "building": "ewalk",
+     "display": "Matahari · E-Walk 2F"
+    },
+    {
+     "srcId": "matahari",
+     "floor": "ff-ewalk",
+     "building": "ewalk",
+     "display": "Matahari · E-Walk 1F"
+    }
+   ]
+  },
+  {
+   "name": "Cinema XXI",
+   "outlets": [
+    {
+     "srcId": "xxiewalk1",
+     "floor": "sf-ewalk",
+     "building": "ewalk",
+     "display": "Cinema XXI · E-Walk 2F"
+    },
+    {
+     "srcId": "xxiewalk",
+     "floor": "ff-ewalk",
+     "building": "ewalk",
+     "display": "Cinema XXI · E-Walk 1F"
+    },
+    {
+     "srcId": "xxi",
+     "floor": "sf-penta",
+     "building": "pentacity",
+     "display": "Cinema XXI · Pentacity"
+    }
+   ]
+  },
+  {
+   "name": "Fun World",
+   "outlets": [
+    {
+     "srcId": "funworld",
+     "floor": "lg-ewalk",
+     "building": "ewalk",
+     "display": "Fun World · E-Walk"
+    },
+    {
+     "srcId": "funworld-",
+     "floor": "ff-penta",
+     "building": "pentacity",
+     "display": "Fun World · Pentacity"
+    }
+   ]
+  },
+  {
+   "name": "MR.DIY",
+   "outlets": [
+    {
+     "srcId": "mrdiy-sec",
+     "floor": "sf-penta",
+     "building": "pentacity",
+     "display": "MR.DIY · Pentacity 2F"
+    },
+    {
+     "srcId": "mrdiy_",
+     "floor": "lg-penta",
+     "building": "pentacity",
+     "display": "MR.DIY · Pentacity LG"
+    }
+   ]
+  }
+ ],
+ "imageUrlConcatenated": [
+  "https://firebasestorage.googleapis.com/v0/b/aobao-ad50f.appspot.com/o/EPUEgZTwYlcTR8fqwA0FQZY5Ynf1%2Fstarbucks.png?alt=media&token=2ea454b1-9aaa-4fc0-b902-8695c7d98630https://firebasestorage.googleapis.com/v0/b/aobao-ad50f.appspot.com/o/EPUEgZTwYlcTR8fqwA0FQZY5Ynf1%2Fstarbucksss.png?alt=media&token=90bc7b29-a123-413d-9213-e8ccefb44ff1",
+  "https://firebasestorage.googleapis.com/v0/b/aobao-ad50f.appspot.com/o/EPUEgZTwYlcTR8fqwA0FQZY5Ynf1%2Fstarbucks.png?alt=media&token=2ea454b1-9aaa-4fc0-b902-8695c7d98630https://firebasestorage.googleapis.com/v0/b/aobao-ad50f.appspot.com/o/EPUEgZTwYlcTR8fqwA0FQZY5Ynf1%2Fstarbucksss.png?alt=media&token=90bc7b29-a123-413d-9213-e8ccefb44ff1"
+ ],
+ "noLogo": [
+  "barras-ug",
+  "logo-ug",
+  "lilla-label-ug",
+  "sneakers-lg-ewalk",
+  "food-court-sf-penta (old map gives Food Court the XXI logo)"
+ ],
+ "logoBorrowed": [
+  {
+   "tenant": "java-kulit-ug",
+   "from_": "https://firebasestorage.googleapis.com/v0/b/aobao-ad50f.appspot.com/o/EPUEgZTwYlcTR8fqwA0FQZY5Ynf1%2Fjavakulit.png?alt=media&token=f7f4ce17-ad5c-4783-8a90-9cd1a706597a"
+  },
+  {
+   "tenant": "starbucks-gf-penta",
+   "from_": "https://firebasestorage.googleapis.com/v0/b/aobao-ad50f.appspot.com/o/EPUEgZTwYlcTR8fqwA0FQZY5Ynf1%2Fstarbucks.png?alt=media&token=2ea454b1-9aaa-4fc0-b902-8695c7d98630"
+  }
+ ],
+ "logoMissing404": [
+  {
+   "tenant": "starbucks-gf-penta",
+   "url": "https://firebasestorage.googleapis.com/v0/b/aobao-ad50f.appspot.com/o/EPUEgZTwYlcTR8fqwA0FQZY5Ynf1%2Fstarbucksss.png?alt=media&token=90bc7b29-a123-413d-9213-e8ccefb44ff1"
+  }
+ ],
+ "logoBytes": {
+  "raw": 79967352,
+  "webp": 1821272
+ },
+ "unitMatched": [
+  {
+   "tenant": "jus-crack-lg-penta",
+   "area": 1477
+  },
+  {
+   "tenant": "luuca-lg-penta",
+   "area": 1477
+  },
+  {
+   "tenant": "dcrepes-lg-penta",
+   "area": 1477
+  },
+  {
+   "tenant": "toys-kingdom-lg-penta",
+   "area": 292
+  },
+  {
+   "tenant": "mr-diy-lg-penta",
+   "area": 8834
+  },
+  {
+   "tenant": "kfc-lg-penta",
+   "area": 4756
+  },
+  {
+   "tenant": "babaku-lg-penta",
+   "area": 2248
+  },
+  {
+   "tenant": "dapur-solo-lg-penta",
+   "area": 1874
+  },
+  {
+   "tenant": "solaria-lg-penta",
+   "area": 4293
+  },
+  {
+   "tenant": "royal-k-bbq-lg-penta",
+   "area": 2556
+  },
+  {
+   "tenant": "ichiban-sushi-lg-penta",
+   "area": 2206
+  },
+  {
+   "tenant": "ramen-1-lg-penta",
+   "area": 2491
+  },
+  {
+   "tenant": "pepper-lunch-lg-penta",
+   "area": 2755
+  },
+  {
+   "tenant": "ta-wan-lg-penta",
+   "area": 2711
+  },
+  {
+   "tenant": "imperial-kitchen-and-dimsum-lg-penta",
+   "area": 3480
+  },
+  {
+   "tenant": "bakoel-bamboe-lg-penta",
+   "area": 3653
+  },
+  {
+   "tenant": "miniso-lg-penta",
+   "area": 10052
+  },
+  {
+   "tenant": "yoshinoya-lg-penta",
+   "area": 2701
+  },
+  {
+   "tenant": "gurih-nusantara-lg-penta",
+   "area": 4800
+  },
+  {
+   "tenant": "boncafe-lg-penta",
+   "area": 4800
+  },
+  {
+   "tenant": "kiddy-hope-lg-penta",
+   "area": 25473
+  },
+  {
+   "tenant": "hypermart-lg-penta",
+   "area": 67643
+  },
+  {
+   "tenant": "spilla-jewelry-ff-penta",
+   "area": 1106
+  },
+  {
+   "tenant": "beautyhaul-ff-penta",
+   "area": 1679
+  },
+  {
+   "tenant": "guardian-ff-penta",
+   "area": 3494
+  },
+  {
+   "tenant": "nada-puspita-ff-penta",
+   "area": 3143
+  },
+  {
+   "tenant": "heylocal-ff-penta",
+   "area": 2003
+  },
+  {
+   "tenant": "ria-miranda-ff-penta",
+   "area": 1640
+  },
+  {
+   "tenant": "dwidaya-tour-ff-penta",
+   "area": 439
+  },
+  {
+   "tenant": "footlab-reflexology-ff-penta",
+   "area": 2402
+  },
+  {
+   "tenant": "ypyr-beauty-salon-ff-penta",
+   "area": 1371
+  },
+  {
+   "tenant": "our-self-studio-ff-penta",
+   "area": 1445
+  },
+  {
+   "tenant": "beautique-hair-atelier-ff-penta",
+   "area": 3748
+  },
+  {
+   "tenant": "the-mercy-clinic-ff-penta",
+   "area": 7255
+  },
+  {
+   "tenant": "penta-food-avenue-ff-penta",
+   "area": 38206
+  },
+  {
+   "tenant": "cnc-fitness-ff-penta",
+   "area": 27160
+  },
+  {
+   "tenant": "watsons-ff-penta",
+   "area": 3676
+  },
+  {
+   "tenant": "andalas-ff-penta",
+   "area": 4055
+  },
+  {
+   "tenant": "early-learning-centre-ff-penta",
+   "area": 1974
+  },
+  {
+   "tenant": "mothercare-ff-penta",
+   "area": 4936
+  },
+  {
+   "tenant": "kimukatsu-ff-penta",
+   "area": 3279
+  },
+  {
+   "tenant": "gyu-kaku-ff-penta",
+   "area": 3989
+  },
+  {
+   "tenant": "sushi-tei-ff-penta",
+   "area": 8878
+  },
+  {
+   "tenant": "kidzlandia-ff-penta",
+   "area": 22454
+  },
+  {
+   "tenant": "fun-world-ff-penta",
+   "area": 14573
+  },
+  {
+   "tenant": "selfie-time-ff-ewalk",
+   "area": 5915
+  },
+  {
+   "tenant": "kidzooona-safari-sf-penta",
+   "area": 75885
+  },
+  {
+   "tenant": "mr-diy-sf-penta",
+   "area": 32841
+  },
+  {
+   "tenant": "food-court-sf-penta",
+   "area": 23305
+  },
+  {
+   "tenant": "cocoland-sf-penta",
+   "area": 71458
+  },
+  {
+   "tenant": "cinema-xxi-sf-penta",
+   "area": 77013
+  },
+  {
+   "tenant": "matahari-sf-ewalk",
+   "area": 640
+  }
+ ],
+ "unitMatchingSkipped": [
+  {
+   "floor": "lg-ewalk",
+   "reason": "no <g id=\"tenant\"> group in this SVG"
+  },
+  {
+   "floor": "gf",
+   "reason": "no <g id=\"tenant\"> group in this SVG"
+  },
+  {
+   "floor": "ug",
+   "reason": "no <g id=\"tenant\"> group in this SVG"
+  }
+ ],
+ "unitNotFound": [
+  {
+   "tenant": "cinema-xxi-ff-ewalk",
+   "floor": "ff-ewalk"
+  },
+  {
+   "tenant": "matahari-ff-ewalk",
+   "floor": "ff-ewalk"
+  },
+  {
+   "tenant": "grand-jatra-hotel-sf-ewalk",
+   "floor": "sf-ewalk"
+  },
+  {
+   "tenant": "cinema-xxi-sf-ewalk",
+   "floor": "sf-ewalk"
+  }
+ ],
+ "svg": [
+  {
+   "floor": "lg-penta",
+   "src": "lg-pentacity.svg",
+   "rawBytes": 1230224,
+   "cleanBytes": 273773,
+   "removed": {
+    "metadata": 1,
+    "aipgfRef": 1,
+    "aipgf": 1
+   },
+   "rescaledBy": null
+  },
+  {
+   "floor": "lg-ewalk",
+   "src": "lg-ewalk.svg",
+   "rawBytes": 1194979,
+   "cleanBytes": 932445,
+   "removed": {},
+   "rescaledBy": 7.218045
+  },
+  {
+   "floor": "gf",
+   "src": "layer1.svg",
+   "rawBytes": 527297,
+   "cleanBytes": 530660,
+   "removed": {
+    "image": 2
+   },
+   "rescaledBy": null
+  },
+  {
+   "floor": "ug",
+   "src": "Upper_Ground_-_Pentacity_and_Ewalk.svg",
+   "rawBytes": 642587,
+   "cleanBytes": 646183,
+   "removed": {
+    "image": 2
+   },
+   "rescaledBy": null
+  },
+  {
+   "floor": "ff-penta",
+   "src": "first-floor-pentacity.svg",
+   "rawBytes": 869049,
+   "cleanBytes": 200238,
+   "removed": {
+    "metadata": 1,
+    "aipgfRef": 1,
+    "aipgf": 1
+   },
+   "rescaledBy": null
+  },
+  {
+   "floor": "ff-ewalk",
+   "src": "ff-ewalk.svg",
+   "rawBytes": 1428239,
+   "cleanBytes": 62780,
+   "removed": {
+    "metadata": 1,
+    "aipgfRef": 1,
+    "aipgf": 1
+   },
+   "rescaledBy": null
+  },
+  {
+   "floor": "sf-penta",
+   "src": "secondfloor-pentacity.svg",
+   "rawBytes": 509734,
+   "cleanBytes": 81446,
+   "removed": {
+    "metadata": 1,
+    "aipgfRef": 1,
+    "aipgf": 1
+   },
+   "rescaledBy": null
+  },
+  {
+   "floor": "sf-ewalk",
+   "src": "sf-ewalk.svg",
+   "rawBytes": 494927,
+   "cleanBytes": 55553,
+   "removed": {
+    "image": 1,
+    "metadata": 1,
+    "aipgfRef": 1,
+    "aipgf": 1
+   },
+   "rescaledBy": null
+  }
+ ],
+ "counts": {
+  "floors": 8,
+  "tenants": 210,
+  "kiosks": 7,
+  "amenities": 40,
+  "nodes": 614,
+  "edges": 670,
+  "tJunctions": 5,
+  "attach": {
+   "projected": 6,
+   "route": 204
+  }
+ }
+}

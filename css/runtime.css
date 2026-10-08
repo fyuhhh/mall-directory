@@ -1,0 +1,105 @@
+/*
+ * runtime.css — CMS runtime components for the kiosk (WP-C): promo media, notice banner / emergency overlay,
+ * identify overlay, offline/connecting screen, tenant status badges, POI buttons, compact multi-floor leg list.
+ * Loaded after kiosk.css (and before lite.css). Does not change the existing look of anything else.
+ */
+
+/* ---------- promo cards from promos.json ---------- */
+.promo[data-link] { cursor: pointer; }
+.promo-media { padding: 0; background: #1D1A17; }
+.promo-media::before { display: none; }
+.promo-media img, .promo-media video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.promo-full { position: absolute; inset: 0; z-index: 20; background: #1D1A17; }
+.promo-full img, .promo-full video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.promo-full .pf-txt { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 120px; color: #fff; }
+.promo-full .pf-txt b { font-size: 120px; letter-spacing: -.04em; line-height: 1; }
+.promo-full .pf-txt span { font-size: 36px; margin-top: 24px; opacity: .85; }
+.promo-qr { position: absolute; inset: 0; z-index: 30; background: rgba(29, 26, 23, .55); display: flex; align-items: center; justify-content: center; }
+.pq-card { background: #fff; border-radius: 34px; padding: 40px 48px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; max-width: 560px; }
+.pq-card .qr { width: 300px; height: 300px; }
+.pq-card b { font-size: 30px; letter-spacing: -.01em; }
+.pq-card span { font-size: 20px; color: var(--ink-2); font-weight: 600; }
+.pq-card small { font-size: 15px; color: var(--muted); font-weight: 600; }
+
+/* ---------- notice (status.json) ---------- */
+.notice-bar { position: fixed; left: 50%; top: 18px; transform: translateX(-50%); z-index: 60; max-width: 1400px; min-width: 640px;
+  display: flex; align-items: center; gap: 16px; padding: 16px 28px; border-radius: 22px; background: #fff; color: var(--ink);
+  box-shadow: var(--shadow-3), inset 0 0 0 2px var(--accent); font-size: 21px; font-weight: 700; line-height: 1.35; pointer-events: none; }
+.notice-bar .ic { font-size: 30px; color: var(--accent); }
+.notice-bar.warning { box-shadow: var(--shadow-3), inset 0 0 0 2px var(--warn); background: #FFF6EF; }
+.notice-bar.warning .ic { color: var(--warn); }
+.notice-bar small { display: block; font-size: 16px; font-weight: 600; color: var(--ink-2); }
+.notice-emg { position: fixed; inset: 0; z-index: 200; background: #B3261E; color: #fff; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center; padding: 80px; gap: 28px; }
+.notice-emg .ic { font-size: 120px; }
+.notice-emg b { font-size: 72px; line-height: 1.1; letter-spacing: -.02em; max-width: 1500px; }
+.notice-emg span { font-size: 40px; font-weight: 600; opacity: .9; max-width: 1500px; line-height: 1.3; }
+
+/* ---------- identify (remote command) ---------- */
+.identify { position: fixed; inset: 0; z-index: 300; background: rgba(29, 26, 23, .82); display: flex; align-items: center; justify-content: center; pointer-events: none; }
+.identify div { background: #fff; border-radius: 40px; padding: 60px 90px; text-align: center; box-shadow: var(--shadow-3); }
+.identify small { display: block; font-size: 22px; letter-spacing: var(--kicker-ls); text-transform: uppercase; color: var(--muted); font-weight: 800; }
+.identify b { display: block; font-size: 120px; letter-spacing: -.03em; margin: 10px 0; }
+.identify span { font-size: 22px; color: var(--ink-2); font-weight: 600; }
+
+/* ---------- connecting / offline boot screen ---------- */
+.offline-scr { position: fixed; inset: 0; z-index: 400; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center; }
+.offline-scr b { font-size: 46px; letter-spacing: -.02em; }
+.offline-scr span { font-size: 22px; color: var(--ink-2); font-weight: 600; }
+
+/* ---------- tenant status badges ---------- */
+.st-badge { display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border-radius: 10px; font-size: 14px; font-weight: 800;
+  letter-spacing: .02em; background: #FBEDE3; color: var(--warn); white-space: nowrap; vertical-align: middle; }
+.st-badge.soon { background: var(--accent-soft); color: var(--accent-ink); }
+.row-n .st-badge { margin-left: 10px; height: 26px; font-size: 13px; }
+.d-status { margin-top: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 16px; color: var(--ink-2); font-weight: 600; }
+.row.dim .logo-box, .row.dim .row-n { opacity: .6; }
+
+/* ---------- home facilities: up to 6 buttons (connectors + POI types) ---------- */
+.amen-row.many { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.amen-row.many .amen-btn { height: 70px; flex-direction: row; gap: 10px; font-size: 17px; padding: 0 10px; }
+.amen-row.many .amen-btn small { display: none; }
+.amen-row.many .amen-btn .ai { font-size: 24px; }
+.amen-btn .ai.poi { color: var(--ok); }
+
+/* ---------- route: closed / detour messages ---------- */
+.r-err b { display: block; margin-bottom: 4px; }
+.r-detour { flex: none; margin: 0 0 10px; padding: 12px 16px; border-radius: 16px; background: #FFF6EF; color: var(--warn);
+  font-size: 16px; font-weight: 700; line-height: 1.35; display: flex; gap: 10px; align-items: flex-start; }
+.r-detour .ic { font-size: 20px; margin-top: 1px; }
+
+/* ---------- multi-floor leg list: collapsible sub-steps, clean legible cards ---------- */
+.legs.multi .leg .leg-s { display: none; }
+.legs.multi .leg.on .leg-s, .legs.multi .leg.open .leg-s { display: block; }
+.legs.multi .leg:not(.on):not(.open) { padding: 12px 14px; }
+.legs.multi .leg:not(.on):not(.open) .leg-t { font-size: 15px; }
+.legs.multi .leg.tr { padding: 10px 14px; min-height: 48px; }
+.legs.multi .leg.tr .tr-t { font-size: 14.5px; line-height: 1.3; }
+.legs.multi .leg.tr.on { background: rgba(47,91,234,.12); border-style: solid; box-shadow: 0 4px 14px rgba(47,91,234,.12); }
+
+/* multi-floor: compact stats and header */
+.route.compact .r-dest { padding: 10px 12px; }
+.route.compact .r-dest .logo-box { width: 52px; height: 52px; border-radius: 14px; }
+.route.compact .r-dn { font-size: 20px; }
+.route.compact .r-stats { margin: 10px 0 8px; }
+.route.compact .stat { padding: 8px 14px 9px; border-radius: 16px; }
+.route.compact .stat-v { font-size: 22px; }
+.route.compact .dev-warn { padding: 6px 10px; font-size: 12px; }
+
+/* ---------- POI markers & closed connectors on the map ---------- */
+.poi rect { stroke: #fff; stroke-width: 2; filter: url(#mvShadow); }
+.poi .poi-ic { color: #fff; }
+.poi.closed rect { fill: #9A9188 !important; }
+.amen.closed rect { fill: #CFC8BF; stroke: #9A9188; }
+.amen.closed .amen-ic { stroke: #6E665E; }
+.amen .amen-x, .poi .amen-x { display: none; }
+.amen.closed .amen-x, .poi.closed .amen-x { display: inline; }
+.amen-x circle { fill: var(--warn); stroke: #fff; stroke-width: 2; }
+.amen-x path { fill: none; stroke: #fff; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.mv-run circle { fill: var(--accent); stroke: #fff; stroke-width: 4; }
+
+/* chained escalator/lift rides: floors passed through */
+.stat-via { font-size: 12.5px; font-weight: 700; color: rgba(255,255,255,.62); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.legs .leg.tr.cont .leg-n { background: transparent; color: var(--ink-2); box-shadow: inset 0 0 0 2px var(--line-2); }
+.legs .leg.tr.cont.on .leg-n { background: var(--ink); color: #fff; box-shadow: none; }
+.legs .leg.tr.cont.done .leg-n { background: var(--ok); color: #fff; box-shadow: none; }

@@ -1,0 +1,7 @@
+# Arsip rilis: nama folder = versi → immutable
+Options -Indexes
+<IfModule mod_headers.c>
+  <FilesMatch "\.json$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>

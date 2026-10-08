@@ -1,0 +1,229 @@
+{
+ "version": "P0001-202610041200",
+ "generated": "2026-10-04T12:00:00+08:00",
+ "featured": [
+  "uniqlo-gf",
+  "h-and-m-gf",
+  "starbucks-gf-penta",
+  "cinema-xxi-sf-penta",
+  "matahari-ff-ewalk",
+  "sephora-gf",
+  "charles-and-keith-gf",
+  "samsung-experience-store-ug"
+ ],
+ "promos": [
+  {
+   "id": 101,
+   "slot": "attract-hero",
+   "kind": "image",
+   "media": "tests/fixtures/media/promo-hero-1.svg",
+   "poster": null,
+   "bg": "#C2417A",
+   "title": {
+    "en": "Beauty Week",
+    "id": "Pekan Kecantikan"
+   },
+   "sub": {
+    "en": "Sephora & friends",
+    "id": "Sephora & lainnya"
+   },
+   "link": {
+    "type": "tenant",
+    "ref": "sephora-gf"
+   },
+   "from": "2026-10-01T00:00:00+08:00",
+   "to": "2026-12-31T23:59:59+08:00",
+   "days": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "time": [
+    "00:00",
+    "23:59"
+   ],
+   "durationSec": 6,
+   "weight": 5,
+   "targets": "*"
+  },
+  {
+   "id": 102,
+   "slot": "attract-hero",
+   "kind": "text",
+   "media": null,
+   "poster": null,
+   "bg": "#2F5BEA",
+   "title": {
+    "en": "Weekend Fashion Week",
+    "id": "Weekend Fashion Week"
+   },
+   "sub": {
+    "en": "Up to 50% off at selected fashion stores",
+    "id": "Diskon s.d. 50% di tenant fashion pilihan"
+   },
+   "link": {
+    "type": "category",
+    "ref": "fashion"
+   },
+   "from": "2026-10-01T00:00:00+08:00",
+   "to": "2026-12-31T23:59:59+08:00",
+   "days": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "time": [
+    "00:00",
+    "23:59"
+   ],
+   "durationSec": 6,
+   "weight": 3,
+   "targets": "*"
+  },
+  {
+   "id": 103,
+   "slot": "attract-hero",
+   "kind": "event",
+   "media": null,
+   "poster": null,
+   "bg": "#1E8E5A",
+   "title": {
+    "en": "Family Fun Day",
+    "id": "Family Fun Day"
+   },
+   "sub": {
+    "en": "Sat 11 Oct · Fun World",
+    "id": "Sab 11 Okt · Fun World"
+   },
+   "link": {
+    "type": "url",
+    "ref": "https://www.instagram.com/"
+   },
+   "from": "2026-10-01T00:00:00+08:00",
+   "to": "2026-12-31T23:59:59+08:00",
+   "days": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "time": [
+    "00:00",
+    "23:59"
+   ],
+   "durationSec": 6,
+   "weight": 2,
+   "targets": "*"
+  },
+  {
+   "id": 104,
+   "slot": "attract-hero",
+   "kind": "text",
+   "media": null,
+   "poster": null,
+   "bg": "#7B4FD6",
+   "title": {
+    "en": "ONLY ON ug-ewalk",
+    "id": "HANYA DI ug-ewalk"
+   },
+   "sub": {
+    "en": "targeting test",
+    "id": "uji target"
+   },
+   "link": {
+    "type": "none",
+    "ref": null
+   },
+   "from": "2026-10-01T00:00:00+08:00",
+   "to": "2026-12-31T23:59:59+08:00",
+   "days": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "time": [
+    "00:00",
+    "23:59"
+   ],
+   "durationSec": 6,
+   "weight": 5,
+   "targets": [
+    "ug-ewalk"
+   ]
+  },
+  {
+   "id": 105,
+   "slot": "attract-fullscreen",
+   "kind": "image",
+   "media": "tests/fixtures/media/promo-full-1.svg",
+   "poster": null,
+   "bg": "#1A2F7A",
+   "title": {
+    "en": "Grand Sale 10.10",
+    "id": "Grand Sale 10.10"
+   },
+   "sub": {
+    "en": "",
+    "id": ""
+   },
+   "link": {
+    "type": "none",
+    "ref": null
+   },
+   "from": "2026-10-01T00:00:00+08:00",
+   "to": "2026-12-31T23:59:59+08:00",
+   "days": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "time": [
+    "00:00",
+    "23:59"
+   ],
+   "durationSec": 5,
+   "weight": 1,
+   "targets": "*"
+  }
+ ],
+ "events": [
+  {
+   "id": 3,
+   "title": {
+    "en": "Family Fun Day",
+    "id": "Family Fun Day"
+   },
+   "desc": {
+    "en": "Games & prizes",
+    "id": "Permainan & hadiah"
+   },
+   "media": null,
+   "from": "2026-10-11T10:00:00+08:00",
+   "to": "2026-10-11T18:00:00+08:00",
+   "location": {
+    "type": "tenant",
+    "ref": "fun-world-ff-penta"
+   },
+   "onAttract": true
+  }
+ ]
+}

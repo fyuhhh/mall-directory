@@ -1,0 +1,41 @@
+# BSB Directory — root .htaccess (WP-A): proteksi file server + header cache (§6.4, §8)
+Options -Indexes
+
+# MIME yang tidak ada di mime.types XAMPP (tanpa ini .webp/.json/.woff2 terkirim TANPA Content-Type + nosniff)
+<IfModule mod_mime.c>
+  AddType image/webp .webp
+  AddType application/json .json
+  AddType font/woff2 .woff2
+  AddType video/mp4 .mp4
+</IfModule>
+
+# Konfigurasi & kode server tidak boleh diakses dari web
+<FilesMatch "^(config(\.local)?\.php|.*\.sql|\.publish\.lock|\.cache\.json|.*\.tmp\d*.*)$">
+  Require all denied
+</FilesMatch>
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^(lib|db|tools)(/|$) - [F,L]
+  RewriteRule (^|/)\. - [F,L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  # Admin UI (cms/, WP-B): CSP §8.1
+  <If "%{REQUEST_URI} =~ m#/cms/#">
+    Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; frame-src 'self'"
+    Header always set X-Frame-Options DENY
+  </If>
+  Header always set X-Content-Type-Options nosniff
+  Header always set Referrer-Policy same-origin
+  # snapshot live: selalu revalidasi (ETag), arsip rilis: immutable
+  <FilesMatch "^(directory|promos|status|version)\.json$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  # shell aplikasi kiosk/HP
+  <FilesMatch "\.(html|js|css)$">
+    Header set Cache-Control "max-age=300, stale-while-revalidate=86400"
+  </FilesMatch>
+  <FilesMatch "\.(woff2?|ttf)$">
+    Header set Cache-Control "public, max-age=2592000"
+  </FilesMatch>
+</IfModule>

@@ -1,0 +1,12 @@
+== Perbandingan biaya rute kiosk→tenant
+   lama: data/releases/legacy-directory.json (mapplic bhEfnhBRWvijlEasMqb7)
+   baru: data/directory.json (D0001-202610040341)
+   mode default    pasangan=1470 identik=1470 beda=0 (maks selisih 0.00) pasangan-baru-tanpa-lawan=0
+   mode aksesibel  pasangan=1470 identik=1470 beda=0 (maks selisih 0.00) pasangan-baru-tanpa-lawan=0
+   edge [from,to,cost,type]: lama=670 baru=670  hanya-lama=0 hanya-baru=0
+   tenants    lama=210 baru=210  field berbeda: logo×17 [andalas-ug,batik-keris-ug-penta,c-and-f-perfume-gf,cinema-xxi-sf-ewalk,cols-froyo-gf,dcrepes-ug,…]  keywords(set) identik=210/210
+   kiosks     lama=7 baru=7  field berbeda: tidak ada
+   amenities  lama=40 baru=39  field berbeda: (hilang)×1 [esc-c-ewalk-ug-2]; connectors×1 [esc-b-ewalk-ff-ewalk]
+   floors     lama=8 baru=8  field berbeda: tidak ada
+   categories lama=8 baru=8  field berbeda: tidak ada
+   HASIL: biaya rute IDENTIK untuk semua pasangan (default & aksesibel)

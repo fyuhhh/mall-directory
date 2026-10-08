@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Direktori e-Walk & Pentacity</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/kiosk.css">
+  <link rel="stylesheet" href="css/runtime.css">
+  <link rel="stylesheet" href="css/lite.css">
+  <script src="config.js"></script>
+  <script src="js/perf.js"></script>
+  <script>
+    // Layout is designed at 1920×1080; scale it to fit whatever screen the kiosk (or a laptop) has.
+    (function () {
+      var de = document.documentElement;
+      function fit() { de.style.zoom = Math.min(innerWidth / 1920, innerHeight / 1080); }
+      fit(); addEventListener('resize', fit);
+    })();
+  </script>
+</head>
+<body class="kiosk">
+  <div id="app">
+    <!-- LEFT PANEL -->
+    <aside class="panel" id="panel">
+      <header class="brand">
+        <div class="lockup lk-panel" role="img" aria-label="e-Walk &amp; Pentacity"><img src="assets/brand/ewalk.webp" alt=""><i></i><img src="assets/brand/pentacity.webp" alt=""></div>
+        <div class="brand-txt"></div>
+        <div class="brand-right">
+          <div class="clock" id="clock">--:--</div>
+          <button class="lang-btn" id="langBtn" type="button"><span data-l="en">EN</span><span data-l="id">ID</span></button>
+        </div>
+      </header>
+
+      <button class="search" id="searchBox" type="button">
+        <span class="search-ic" data-icon="search"></span>
+        <span class="search-q" id="searchQ"></span>
+        <span class="search-ph" id="searchPh" data-i18n="searchPh">Cari toko, makanan, merek…</span>
+        <span class="search-x" id="searchClear" data-icon="x" hidden></span>
+      </button>
+
+      <div class="views" id="views">
+        <!-- HOME -->
+        <section class="view view-home is-active" data-view="home">
+          <h2 class="sec-title" data-i18n="categories">Kategori</h2>
+          <div class="cat-grid" id="catGrid"></div>
+          <button class="az-btn" id="azBtn" type="button"><span data-icon="arrow-down-a-z"></span><span data-i18n="allTenants">Semua toko A–Z</span><span class="az-count" id="azCount"></span><span data-icon="chevron-right"></span></button>
+          <h2 class="sec-title" data-i18n="amenities">Fasilitas</h2>
+          <div class="amen-row" id="amenRow"></div>
+        </section>
+
+        <!-- RESULTS / LIST -->
+        <section class="view view-list" data-view="list">
+          <div class="view-head">
+            <button class="back-btn" data-back type="button"><span data-icon="arrow-left"></span></button>
+            <div class="vh-title"><div id="listTitle"></div><div class="vh-sub" id="listSub"></div></div>
+          </div>
+          <div class="filters" id="filters"></div>
+          <div class="list" id="list"></div>
+        </section>
+
+        <!-- DETAIL -->
+        <section class="view view-detail" data-view="detail">
+          <div class="view-head">
+            <button class="back-btn" data-back type="button"><span data-icon="arrow-left"></span></button>
+            <div class="vh-title"><div id="detailCrumb"></div></div>
+          </div>
+          <div class="detail" id="detail"></div>
+        </section>
+
+        <!-- ROUTE -->
+        <section class="view view-route" data-view="route">
+          <div class="view-head">
+            <button class="back-btn" data-back type="button"><span data-icon="arrow-left"></span></button>
+            <div class="vh-title"><div data-i18n="route">Rute</div><div class="vh-sub" id="routeSub"></div></div>
+          </div>
+          <div class="route" id="route"></div>
+        </section>
+      </div>
+
+      <!-- ON-SCREEN KEYBOARD -->
+      <div class="osk" id="osk" aria-hidden="true">
+        <div class="osk-quick" id="oskQuick"></div>
+        <div class="osk-keys" id="oskKeys"></div>
+      </div>
+    </aside>
+
+    <!-- MAP -->
+    <main class="stage-wrap">
+      <div id="map"></div>
+      <div class="map-ui floor-card" id="floorCard"><div class="fc-k" id="fcK"></div><div class="fc-n" id="fcN"></div></div>
+      <nav class="map-ui floor-switch" id="floorSwitch"></nav>
+      <div class="map-ui zoom" id="zoomCtl">
+        <button type="button" data-z="in"><span data-icon="plus"></span></button>
+        <button type="button" data-z="out"><span data-icon="minus"></span></button>
+        <button type="button" data-z="home"><span data-icon="locate-fixed"></span></button>
+      </div>
+      <div class="map-ui caption" id="caption" hidden><div class="cap-step" id="capStep"></div><div class="cap-txt" id="capTxt"></div></div>
+      <div class="map-ui toast" id="toast" hidden></div>
+    </main>
+
+    <!-- QR MODAL POPUP -->
+    <div class="qr-modal-backdrop" id="qrModal" hidden>
+      <div class="qr-modal-card">
+        <button class="qr-modal-close" id="qrModalClose" type="button"><span data-icon="x"></span></button>
+        <div class="qr-modal-box" id="qrModalBox"></div>
+        <div class="qr-modal-info">
+          <div class="qr-modal-title" id="qrModalTitle">Buka Navigasi di Ponsel</div>
+          <div class="qr-modal-sub" id="qrModalSub">Pindai kode QR ini dengan kamera HP Anda untuk panduan rute interaktif</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ATTRACT / IDLE -->
+  <div class="attract" id="attract">
+    <div class="att-bg"><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i></div>
+    <div class="att-top">
+      <div class="lockup lk-attract" role="img" aria-label="e-Walk &amp; Pentacity"><img src="assets/brand/ewalk.webp" alt=""><i></i><img src="assets/brand/pentacity.webp" alt=""></div>
+      <div class="att-clock" id="attClock"></div>
+    </div>
+    <div class="att-main">
+      <div class="att-kicker" id="attKicker"></div>
+      <h1 class="att-title"><span class="att-w" id="attWelcome"></span><br><span class="att-mall">e-Walk <em>&</em> Pentacity</span></h1>
+      <p class="att-sub" id="attSub"></p>
+      <div class="att-promo" id="attPromo"></div>
+    </div>
+    <div class="att-marquee"><div class="att-track" id="attTrack"></div></div>
+    <div class="att-cta"><span class="att-hand" data-icon="hand"></span><span id="attCta"></span><span class="att-cta-alt" id="attCtaAlt"></span></div>
+  </div>
+
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script src="assets/vendor/qrcode.min.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/route.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/qr.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/telemetry.js"></script>
+  <script src="js/sync.js"></script>
+  <script src="js/promos.js"></script>
+  <script src="js/kiosk.js"></script>
+  <script>
+    // Offline cache (CMS_SPEC §6.3). Needs HTTPS or localhost; elsewhere the kiosk falls back to localStorage snapshots.
+    (function () {
+      var c = window.BSB_CONFIG || {};
+      if (c.serviceWorker === false) {
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(function (regs) {
+            regs.forEach(function (r) { r.unregister(); });
+          });
+          if (window.caches) {
+            caches.keys().then(function (keys) {
+              keys.forEach(function (k) { caches.delete(k); });
+            });
+          }
+        }
+        return;
+      }
+      if (!('serviceWorker' in navigator) || !window.isSecureContext) return;
+      addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js?v=' + encodeURIComponent(c.APP_BUILD || 'dev'), { scope: './' })
+          .catch(function (e) { window.BSB && (BSB.swError = String(e)); });
+      });
+    })();
+  </script>
+</body>
+</html>
