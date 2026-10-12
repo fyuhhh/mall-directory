@@ -1,0 +1,24 @@
+<?php
+/**
+ * Contoh konfigurasi untuk cPanel Shared Hosting.
+ * Salin file ini menjadi 'config.local.php' di server cPanel Anda.
+ */
+return [
+    'db' => [
+        'host'   => 'localhost',
+        'port'   => 3306,
+        'socket' => null,
+        'name'   => 'cpaneluser_bsb_dir',     // Ganti dengan nama database cPanel Anda
+        'user'   => 'cpaneluser_bsb_usr',     // Ganti dengan username database cPanel Anda
+        'pass'   => 'PasswordDatabaseKuat123',// Ganti dengan password database cPanel Anda
+    ],
+    // Path mysqldump standar di Linux cPanel
+    'mysqldump'    => '/usr/bin/mysqldump',
+    // String acak untuk salt hash IP pengunjung (UU PDP)
+    'secret'       => 'bsb-prod-salt-' . bin2hex(random_bytes(12)),
+    // Set true bila website sudah menggunakan HTTPS (SSL aktif)
+    'cookieSecure' => true,
+    'trustProxy'   => false,
+    'fileMode'     => 0644,
+    'dirMode'      => 0755,
+];
