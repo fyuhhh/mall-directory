@@ -1,9 +1,9 @@
 {
     "directory": {
-        "version": "D0034-202610061135",
-        "sha256": "e51b4a0bd8281ba92872081ad7c358d19cd2cb1aae058f044c68bc2c80993eb4",
-        "url": "data/directory.json?v=D0034-202610061135",
-        "publishedAt": "2026-10-06T03:31:32.242Z"
+        "version": "D0060-202610231742",
+        "sha256": "14ca35d2ec2983857058e82026c7e51947141d18667d0bcad7f402e96b4eb554",
+        "url": "data/directory.json?v=D0060-202610231742",
+        "publishedAt": "2026-10-23T17:42:34+08:00"
     },
     "promos": {
         "version": "P0007-202610040457",
@@ -12,10 +12,10 @@
         "publishedAt": "2026-10-04T04:57:53+08:00"
     },
     "status": {
-        "version": "S0045-202610040450",
-        "sha256": "7ad2dc12a374998de0a0e551662edb9426e818f91933fecfb16c979001651fa1",
-        "url": "data/status.json?v=S0045-202610040450",
-        "publishedAt": "2026-10-04T04:50:41+08:00"
+        "version": "S0069-202610231742",
+        "sha256": "01b25c7bf69146798a5d1ed0c22349282fbb0aea1226f865b10b25090780cf96",
+        "url": "data/status.json?v=S0069-202610231742",
+        "publishedAt": "2026-10-23T17:42:33+08:00"
     },
     "minAppBuild": "2026.10.1"
 }

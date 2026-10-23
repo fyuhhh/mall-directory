@@ -7,7 +7,7 @@
   - Frontend: Vanilla JavaScript (ES modules), CSS3, HTML5, SVG map rendering.
   - Backend / CMS: PHP 8.x, MySQL/MariaDB schema (`db/schema.sql`), JSON data layer (`data/directory.json`).
   - Wayfinding: A* graph routing engine across multiple floors connected by elevators, escalators, and bridges.
-- **Local Dev Server:** `php -S 0.0.0.0:8000` (port 8000).
+- **Local Dev Server:** `php -S 127.0.0.1:8000 tools/dev_router.php` (port 8000; routes `/api/*`, mimics `.htaccess`, needs MariaDB `bsb_directory`).
 - **CMS URL (Mock Mode):** `http://localhost:8000/cms/login.html?mock=1`
 
 ---
@@ -56,6 +56,14 @@
 
 ---
 
-## 5. Verification Commands
+## 5. 3D Floors (docs/3D.md)
+- Floors listed in `data/3d/floors.json` render in 3D (`js/map3d.js`, `js/scene3d.js`). A floor with `"frame": "plan"` keeps its CMS coordinates in the Illustrator drawing's units; the CMS shows it as a top-down plan generated from the model (`lib/Map3d.php`).
+- Roof names/logos come from CMS tenants linked by `unit_shape_id` (snapshot `tenants[].unitShape`); `floors[].unitsHidden` blanks switched-off tenants; `data/3d/edits/*.json` holds roof overrides from the 3D editor (CMS > Peta 3D).
+- Pins → paths: `Map3d::reconnect` / `POST /api/admin/graph/reconnect` (door on the shop front, spur over walkable floor). In-floor stairs edges: `graph_edges.type = 'stairs'` (skipped in wheelchair mode, `db/migrate_2026_10_3d.sql`).
+- Tools: `tools/3d/rebase_floor.php` (move CMS data onto a drawing, refresh plan, tidy, focus), `tools/3d/register_floor.py` (fit a drawing onto an old 2D floor, before rebasing), `tools/3d/merge_floor.py` (GF / UG: join one drawing per building into one model; units carry `building`).
+
+## 6. Verification Commands
 - Route regression: `node tests/wpc/route_regression.js`
 - Python route verification: `python3 tools/verify_routes.py`
+- Graph validation from the DB: `php tools/validate.php [--accessible]`
+- API smoke test (publishes and restores): `php tools/smoke_test.php --cred <credentials file> --base http://127.0.0.1:8000`

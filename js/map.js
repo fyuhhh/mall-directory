@@ -536,7 +536,8 @@ window.BSB = window.BSB || {};
         self.cam.cx += before.x - after.x; self.cam.cy += before.y - after.y;
         moved = true;
       } else {
-        self.cam.cx -= (cur.x - last.x) / self.cam.s; self.cam.cy -= (cur.y - last.y) / self.cam.s;
+        var a = self.toMap(last.x, last.y), b = self.toMap(cur.x, cur.y); // any floor projection (2D or 3D)
+        self.cam.cx += a.x - b.x; self.cam.cy += a.y - b.y;
       }
       self._clampCam();
       last = cur; sched();

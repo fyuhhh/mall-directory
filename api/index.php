@@ -6,7 +6,7 @@ require __DIR__ . '/../lib/bootstrap.php';
 ini_set('display_errors', '0');
 $router = new Router();
 foreach ([PublicApi::class, AuthApi::class, TenantsApi::class, CatalogApi::class, KiosksApi::class, GraphApi::class, ConnectorsApi::class,
-          StatusApi::class, PublishApi::class, MediaApi::class, AnalyticsApi::class] as $cls) $cls::register($router);
+          StatusApi::class, PublishApi::class, MediaApi::class, AnalyticsApi::class, Map3dApi::class] as $cls) $cls::register($router);
 
 try {
     $path = Router::currentPath();

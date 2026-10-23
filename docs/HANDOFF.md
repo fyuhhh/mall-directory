@@ -45,13 +45,14 @@ Pengganti halaman directory lama (ewalkpentacitymall.com/maps-e-walk-pentacity-m
 ## 4. Menjalankan di lokal
 
 1. Salin folder `bsb-directory/` ke `htdocs/` XAMPP (PHP ≥ 8.0, MariaDB ≥ 10.4). Untuk WebP: PHP ≥ 8.1 dengan GD WebP, atau `cwebp` (path di `config.php`).
-2. Import database: `mysql -uroot < _handoff/db/bsb_directory.sql` (membuat DB `bsb_directory`).
-3. Buat admin: `php tools/create_admin.php` (kredensial dev lama **tidak** disertakan di paket ini).
+2. Import database: `php tools/setup.php import` (membuat DB `bsb_directory` dari `_handoff/db/bsb_directory.sql`, cukup PHP; database yang sudah berisi dicadangkan dulu dengan `--force`). Lalu `php tools/setup.php check`. Panduan lengkap: `CARA_MENJALANKAN.md`.
+3. Akun CMS ikut di dump (login sama dengan komputer asal dump; password tidak ditulis di repo publik). Akun tambahan: `php tools/create_admin.php`.
 4. Buka:
    - Kiosk: `http://localhost/bsb-directory/` (param: `?kiosk=<id>&key=<token>`, `?attract=0`, `?lang=id`)
    - HP: `http://localhost/bsb-directory/m/?k=gf-pentacity&t=<tenantId>&a=0&lang=en`
    - CMS: `http://localhost/bsb-directory/cms/` (mode contoh tanpa DB: `cms/login.html?mock=1`)
 5. Token kiosk dibuat di CMS → Kiosk → provisioning (URL + QR + `.bat`).
+   Alternatif tanpa XAMPP: `php -S 127.0.0.1:8000 tools/dev_router.php` (meniru `.htaccess`; kiosk, CMS & API di `http://localhost:8000/`).
 6. Uji ulang: `php tools/validate.php`, `php tools/smoke_test.php --cred <file kredensial>`, `node tests/wpc/route_regression.js`, `node tests/wpc/e2e.js` (Playwright).
 
 Untuk HP di jaringan yang sama: set `PUBLIC_BASE` di `config.js` (IP LAN atau tunnel HTTPS, mis. `cloudflared tunnel --url http://localhost:80`). Lewat http biasa, HP jatuh ke mode manual (tanpa kompas).
@@ -92,3 +93,4 @@ Untuk HP di jaringan yang sama: set `PUBLIC_BASE` di `config.js` (IP LAN atau tu
 - Folder `data/raw/logos/` (cache logo mentah 71 MB) **tidak disertakan**; diunduh ulang otomatis oleh `build_data.py` bila perlu.
 - Database di paket berisi sedikit data telemetri dari pengujian; hash password admin dev & token kiosk dev ada di DB. **Hapus akun dev dan buat ulang token sebelum produksi.**
 - Naikkan `APP_BUILD` saat deploy agar Service Worker kiosk segera mengambil versi baru.
+- Peta 3D (Oktober 2026, `docs/3D.md`): jalankan `db/migrate_2026_10_3d.sql` di DB server (tipe edge `stairs` + tangga GF E-Walk). Koordinat CMS semua lantai sekarang memakai satuan gambar Illustrator (denah tampak atas; GF dan UG digabung dari gambar per gedung); perubahan itu ada di DB, jadi bawa lewat dump DB penuh, bukan `export_cpanel_sql.php`.

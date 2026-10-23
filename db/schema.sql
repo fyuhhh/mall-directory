@@ -135,11 +135,11 @@ CREATE TABLE graph_nodes (
   CONSTRAINT fk_node_floor FOREIGN KEY (floor_id) REFERENCES floors(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE graph_edges (                       -- hanya jalan kaki di dalam satu lantai
+CREATE TABLE graph_edges (                       -- jalan kaki / tangga di dalam satu lantai
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   node_a INT UNSIGNED NOT NULL,                  -- disimpan node_a < node_b
   node_b INT UNSIGNED NOT NULL,
-  type ENUM('walk') NOT NULL DEFAULT 'walk',
+  type ENUM('walk','stairs') NOT NULL DEFAULT 'walk',   -- stairs: dilewati mode kursi roda
   is_enabled TINYINT(1) NOT NULL DEFAULT 1,
   cost_override DECIMAL(10,2) NULL,
   schedule_id INT UNSIGNED NULL,

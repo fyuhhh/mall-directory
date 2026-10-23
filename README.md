@@ -7,6 +7,8 @@ so the kiosk works offline. Only the phone needs network access to the kiosk ser
 
 ## Run
 
+**Setup after `git clone` / `git pull` (database, CMS login, checks): see [`CARA_MENJALANKAN.md`](CARA_MENJALANKAN.md)** — `php tools/setup.php import` then `php tools/setup.php check`.
+
 XAMPP Apache serves the folder:
 
 | What | URL |
@@ -32,11 +34,18 @@ js/route.js           Dijkstra (port of tools/verify_routes.py), leg splitting, 
 js/map.js             MapView shared by kiosk & phone: camera (pan / pinch / wheel / fly-to), floor transitions,
                       screen-space overlay (route glow + draw animation, You-are-here, destination pin, connectors, dot)
 js/search.js          fuzzy search (name / brand / keywords / category + Indonesian synonyms, typo tolerant)
-js/kiosk.js           kiosk UI: attract screen, search + on-screen QWERTY, categories, A–Z, filters, detail, route playback, QR
+js/kiosk.js           kiosk UI: attract screen, search (on-screen QWERTY or a physical keyboard: type, ↓ ↑, Enter, Esc), categories, A–Z, filters, detail, route playback, QR
 js/phone.js           phone UI: compass arrow, calibration, pedometer, steps, floor-change sheet, arrival
 js/icons.js js/qr.js  vendored Lucide icons (ISC) · QR → inline SVG (qrcode-generator, MIT, assets/vendor)
+js/map3d.js           MapView3D: same API, renders floors listed in data/3d/floors.json as 3D (Three.js r147, MIT, assets/vendor)
+js/scene3d.js         3D floor scene shared by kiosk, phone and editor3d.html (roof names/logos, facility icons)
+editor3d.html         3D roof editor (name/logo overrides); saves through the CMS API (CMS > Peta 3D) or tools/3d/serve3d.py
+tools/3d/             Illustrator SVG → 3D model, registration, rebase of CMS data onto the drawing, local server without PHP
+tools/dev_router.php  router for PHP's built-in server: php -S 127.0.0.1:8000 tools/dev_router.php (kiosk + CMS + API)
 docs/screens/         verification screenshots
 ```
+
+3D floors (360° turn, layers, roof names/logos from the CMS; every floor, GF and UG joined from one drawing per building): see `docs/3D.md`. Local run with the CMS: `php -S 127.0.0.1:8000 tools/dev_router.php` (PHP 8 + MariaDB); without PHP: `python3 tools/3d/serve3d.py --port 8000`.
 
 `data/` and `tools/` are the data layer and are not modified by the UI.
 

@@ -36,7 +36,8 @@ final class GraphApi
             $auto = ($a && $b) ? Snapshot::walkCost($a, $b, $floors) : null;
             return ['id' => (int)$e['id'], 'a' => (int)$e['node_a'], 'b' => (int)$e['node_b'], 'enabled' => (bool)(int)$e['is_enabled'],
                 'costOverride' => $e['cost_override'] === null ? null : (float)$e['cost_override'], 'cost' => $e['cost_override'] !== null ? (float)$e['cost_override'] : $auto,
-                'autoCost' => $auto, 'scheduleId' => $e['schedule_id'] === null ? null : (int)$e['schedule_id'], 'label' => $e['label'], 'activeClosures' => $closures[(int)$e['id']] ?? []];
+                'autoCost' => $auto, 'scheduleId' => $e['schedule_id'] === null ? null : (int)$e['schedule_id'], 'label' => $e['label'], 'type' => $e['type'] ?? 'walk',
+                'activeClosures' => $closures[(int)$e['id']] ?? []];
         };
         $tenants = Db::all("SELECT t.id, COALESCE(t.name_override, b.name) name, b.category_id, t.x, t.y, t.node_id, t.unit_shape_id, t.status, t.is_published FROM tenants t JOIN brands b ON b.id=t.brand_id WHERE t.floor_id=? ORDER BY t.id", [$fid]);
         $kiosks = Db::all('SELECT id, name, x, y, node_id, facing_deg FROM kiosks WHERE floor_id=? ORDER BY id', [$fid]);
@@ -116,7 +117,7 @@ final class GraphApi
                 [$x, $y] = $a < $c ? [$a, $c] : [$c, $a];
                 $ex = Db::val('SELECT id FROM graph_edges WHERE node_a=? AND node_b=?', [$x, $y]);
                 if ($ex) return (int)$ex;
-                return Db::insert('graph_edges', ['node_a' => $x, 'node_b' => $y, 'type' => 'walk', 'is_enabled' => $attr['is_enabled'] ?? 1,
+                return Db::insert('graph_edges', ['node_a' => $x, 'node_b' => $y, 'type' => ($attr['type'] ?? 'walk') === 'stairs' ? 'stairs' : 'walk', 'is_enabled' => $attr['is_enabled'] ?? 1,
                     'cost_override' => $attr['cost_override'] ?? null, 'schedule_id' => $attr['schedule_id'] ?? null, 'label' => $attr['label'] ?? null]);
             };
             foreach ($ops as $i => $o) {
@@ -150,7 +151,7 @@ final class GraphApi
                         $inBox($na['floor_id'], $o['x'] ?? null, $o['y'] ?? null, $F);
                         $nid = Db::insert('graph_nodes', ['floor_id' => $na['floor_id'], 'x' => round((float)$o['x'], 2), 'y' => round((float)$o['y'], 2), 'label' => $spurLabel]);
                         Db::exec('DELETE FROM graph_edges WHERE id=?', [$eid]);
-                        $attr = ['is_enabled' => (int)$e['is_enabled'], 'schedule_id' => $e['schedule_id'], 'label' => $e['label']];
+                        $attr = ['is_enabled' => (int)$e['is_enabled'], 'schedule_id' => $e['schedule_id'], 'label' => $e['label'], 'type' => $e['type']];
                         $e1 = $addEdge((int)$e['node_a'], $nid, $attr); $e2 = $addEdge($nid, (int)$e['node_b'], $attr);
                         if (isset($o['tmp'])) { $idMap[(string)$o['tmp']] = $nid; $idMap[$o['tmp'] . '.e1'] = $e1; $idMap[$o['tmp'] . '.e2'] = $e2; }
                         $summary[] = "splitEdge e$eid → n$nid (e$e1,e$e2)";
@@ -160,7 +161,8 @@ final class GraphApi
                         $attr = ['is_enabled' => isset($o['enabled']) ? (Util::bool($o['enabled']) ? 1 : 0) : 1,
                             'cost_override' => isset($o['costOverride']) && $o['costOverride'] !== null ? round((float)$o['costOverride'], 2) : null,
                             'schedule_id' => isset($o['scheduleId']) && $o['scheduleId'] !== null ? (int)$o['scheduleId'] : null,
-                            'label' => isset($o['label']) && $o['label'] !== '' ? mb_substr((string)$o['label'], 0, 80) : null];
+                            'label' => isset($o['label']) && $o['label'] !== '' ? mb_substr((string)$o['label'], 0, 80) : null,
+                            'type' => ($o['type'] ?? 'walk') === 'stairs' ? 'stairs' : 'walk'];
                         $id = $addEdge($a, $c, $attr);
                         if (isset($o['tmp'])) $idMap[(string)$o['tmp']] = $id;
                         $summary[] = "addEdge e$id n$a-n$c";
@@ -173,6 +175,7 @@ final class GraphApi
                         if (array_key_exists('costOverride', $o)) { if ($o['costOverride'] !== null && (!is_numeric($o['costOverride']) || $o['costOverride'] < 0)) throw ApiError::validation([$F => 'costOverride>=0']); $row['cost_override'] = $o['costOverride'] === null ? null : round((float)$o['costOverride'], 2); }
                         if (array_key_exists('scheduleId', $o)) { if ($o['scheduleId'] !== null && !Db::val('SELECT id FROM schedules WHERE id=?', [(int)$o['scheduleId']])) throw ApiError::validation([$F => 'schedule_not_found']); $row['schedule_id'] = $o['scheduleId'] === null ? null : (int)$o['scheduleId']; }
                         if (array_key_exists('label', $o)) $row['label'] = $o['label'] === null || $o['label'] === '' ? null : mb_substr((string)$o['label'], 0, 80);
+                        if (array_key_exists('type', $o)) { if (!in_array($o['type'], ['walk', 'stairs'], true)) throw ApiError::validation([$F => 'type_walk|stairs']); $row['type'] = $o['type']; }
                         if ($row) Db::update('graph_edges', $row, ['id' => $id]);
                         $summary[] = "updateEdge e$id " . implode(',', array_keys($row));
                         break;
@@ -199,7 +202,7 @@ final class GraphApi
                         foreach (Db::all('SELECT * FROM graph_edges WHERE node_a=? OR node_b=?', [$rem, $rem]) as $e) {
                             $other = (int)$e['node_a'] === $rem ? (int)$e['node_b'] : (int)$e['node_a'];
                             Db::exec('DELETE FROM graph_edges WHERE id=?', [$e['id']]);
-                            if ($other !== $keep) $addEdge($keep, $other, ['is_enabled' => (int)$e['is_enabled'], 'cost_override' => null, 'schedule_id' => $e['schedule_id'], 'label' => $e['label']]);
+                            if ($other !== $keep) $addEdge($keep, $other, ['is_enabled' => (int)$e['is_enabled'], 'cost_override' => null, 'schedule_id' => $e['schedule_id'], 'label' => $e['label'], 'type' => $e['type']]);
                         }
                         foreach (['tenants', 'kiosks', 'amenities', 'events'] as $t) Db::exec("UPDATE $t SET node_id=? WHERE node_id=?", [$keep, $rem]);
                         if (Db::val('SELECT COUNT(*) FROM connector_stops WHERE node_id=?', [$rem])) {
@@ -246,21 +249,48 @@ final class GraphApi
         ];
     }
 
-    /** Hubungkan node baru ke koridor terdekat (proyeksi ke edge walk; spur bila > 3 unit). Return node id baru. */
-    public static function snapToCorridor(string $floorId, float $x, float $y, ?string $label = null): int
+    /**
+     * Node pintu di ujung spur (tenant/fasilitas/kiosk/"spur:" berderajat ≤ 1): koridor tidak boleh disambung lewat situ,
+     * kalau tidak rute ke tempat lain menembus toko itu.
+     */
+    public static function doorLeaves(string $floorId): array
+    {
+        $deg = [];
+        foreach (Db::all('SELECT e.node_a, e.node_b FROM graph_edges e JOIN graph_nodes a ON a.id=e.node_a WHERE a.floor_id=?', [$floorId]) as $e) {
+            $deg[(int)$e['node_a']] = ($deg[(int)$e['node_a']] ?? 0) + 1; $deg[(int)$e['node_b']] = ($deg[(int)$e['node_b']] ?? 0) + 1;
+        }
+        $out = [];
+        foreach (Db::col("SELECT node_id FROM tenants WHERE floor_id=? AND node_id IS NOT NULL UNION SELECT node_id FROM amenities WHERE floor_id=? AND node_id IS NOT NULL
+            UNION SELECT node_id FROM kiosks WHERE floor_id=? AND node_id IS NOT NULL UNION SELECT id FROM graph_nodes WHERE floor_id=? AND label LIKE 'spur:%'", [$floorId, $floorId, $floorId, $floorId]) as $id)
+            if (($deg[(int)$id] ?? 0) <= 1) $out[(int)$id] = true;
+        return $out;
+    }
+
+    /** Hubungkan node baru ke koridor terdekat (proyeksi ke edge walk; spur bila > 3 unit). Return node id baru.
+     *  $corridorOnly: abaikan spur ke pintu tenant/fasilitas lain (doorLeaves). */
+    public static function snapToCorridor(string $floorId, float $x, float $y, ?string $label = null, bool $corridorOnly = false): int
+    {
+        $skip = $corridorOnly ? self::doorLeaves($floorId) : [];
+        $new = Db::insert('graph_nodes', ['floor_id' => $floorId, 'x' => round($x, 2), 'y' => round($y, 2), 'label' => $label]);
+        self::connectNode($new, $floorId, $x, $y, $label, $skip);
+        return $new;
+    }
+
+    /** Sambungkan node yang sudah ada ke edge walk terdekat yang tidak menyentuh $skip (split edge, atau spur bila jauh). */
+    public static function connectNode(int $new, string $floorId, float $x, float $y, ?string $label = null, array $skip = []): void
     {
         $best = null;
-        $rows = Db::all('SELECT e.id, e.node_a, e.node_b, a.x ax, a.y ay, b.x bx, b.y by_, e.is_enabled, e.schedule_id, e.label FROM graph_edges e
+        $rows = Db::all('SELECT e.id, e.node_a, e.node_b, a.x ax, a.y ay, b.x bx, b.y by_, e.is_enabled, e.schedule_id, e.label, e.type FROM graph_edges e
             JOIN graph_nodes a ON a.id=e.node_a JOIN graph_nodes b ON b.id=e.node_b WHERE a.floor_id=? AND e.is_enabled=1', [$floorId]);
         foreach ($rows as $r) {
+            if ((int)$r['node_a'] === $new || (int)$r['node_b'] === $new || isset($skip[(int)$r['node_a']]) || isset($skip[(int)$r['node_b']])) continue;
             $dx = $r['bx'] - $r['ax']; $dy = $r['by_'] - $r['ay']; $L = $dx * $dx + $dy * $dy;
             $t = $L > 0 ? max(0, min(1, (($x - $r['ax']) * $dx + ($y - $r['ay']) * $dy) / $L)) : 0;
             $px = $r['ax'] + $t * $dx; $py = $r['ay'] + $t * $dy;
             $d = hypot($x - $px, $y - $py);
             if ($best === null || $d < $best['d']) $best = ['d' => $d, 't' => $t, 'px' => $px, 'py' => $py, 'e' => $r];
         }
-        $new = Db::insert('graph_nodes', ['floor_id' => $floorId, 'x' => round($x, 2), 'y' => round($y, 2), 'label' => $label]);
-        if (!$best) return $new;
+        if (!$best) return;
         $e = $best['e'];
         // titik proyeksi: ujung edge bila t≈0/1, selain itu split edge
         if ($best['t'] < 0.02) $proj = (int)$e['node_a'];
@@ -269,16 +299,15 @@ final class GraphApi
             if ($best['d'] <= 3) { // node baru langsung di koridor: split edge di node baru
                 Db::exec('DELETE FROM graph_edges WHERE id=?', [$e['id']]);
                 foreach ([(int)$e['node_a'], (int)$e['node_b']] as $o) { [$p, $q] = $o < $new ? [$o, $new] : [$new, $o];
-                    Db::insert('graph_edges', ['node_a' => $p, 'node_b' => $q, 'is_enabled' => 1, 'schedule_id' => $e['schedule_id'], 'label' => $e['label']]); }
-                return $new;
+                    Db::insert('graph_edges', ['node_a' => $p, 'node_b' => $q, 'type' => $e['type'], 'is_enabled' => 1, 'schedule_id' => $e['schedule_id'], 'label' => $e['label']]); }
+                return;
             }
             $proj = Db::insert('graph_nodes', ['floor_id' => $floorId, 'x' => round($best['px'], 2), 'y' => round($best['py'], 2), 'label' => $label]);
             Db::exec('DELETE FROM graph_edges WHERE id=?', [$e['id']]);
             foreach ([(int)$e['node_a'], (int)$e['node_b']] as $o) { [$p, $q] = $o < $proj ? [$o, $proj] : [$proj, $o];
-                Db::insert('graph_edges', ['node_a' => $p, 'node_b' => $q, 'is_enabled' => 1, 'schedule_id' => $e['schedule_id'], 'label' => $e['label']]); }
+                Db::insert('graph_edges', ['node_a' => $p, 'node_b' => $q, 'type' => $e['type'], 'is_enabled' => 1, 'schedule_id' => $e['schedule_id'], 'label' => $e['label']]); }
         }
         if ($proj !== $new) { [$p, $q] = $proj < $new ? [$proj, $new] : [$new, $proj]; Db::insert('graph_edges', ['node_a' => $p, 'node_b' => $q, 'is_enabled' => 1]); }
-        return $new;
     }
 
     // ================================================================= uji rute

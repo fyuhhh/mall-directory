@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Editor Peta 3D</title>
+<style>
+/* 3D floor editor: custom roof names and logos for the kiosk's 3D floors. Saves through the CMS API (logged in, ?cms=1 inside
+   CMS > Peta 3D) or the local tools/3d/serve3d.py. */
+@font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 400 800; font-display: swap; src: url(assets/fonts/PlusJakartaSans-latin.woff2) format('woff2'); }
+@font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 400 800; font-display: swap; src: url(assets/fonts/PlusJakartaSans-latin-ext.woff2) format('woff2'); }
+:root{
+  color-scheme:light;
+  --bg:#fafafa; --panel:#ffffff; --panel-2:#f3f3f1; --ink:#1f2124; --muted:#6d7075; --line:#e4e4e0;
+  --accent:#e9a23b; --ok:#3a8f62; --warn:#a35b00; --shadow:0 1px 2px rgba(20,20,20,.06),0 10px 30px rgba(20,20,20,.09);
+  --font:"Plus Jakarta Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.45;overflow:hidden}
+button,input{font:inherit;color:inherit}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.app{height:100%;display:grid;grid-template-columns:minmax(260px,300px) minmax(0,1fr)}
+.side{display:flex;flex-direction:column;min-height:0;background:var(--panel);border-right:1px solid var(--line)}
+.head{padding:20px 18px 10px;display:grid;gap:2px}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{margin:0;font-size:22px;font-weight:700;letter-spacing:-.02em}
+.head p{margin:4px 0 0;color:var(--muted);font-size:12.5px}
+.block{padding:8px 18px;display:grid;gap:8px}
+.label{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.floors{display:flex;flex-wrap:wrap;gap:6px}
+.floors button{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:6px 10px;cursor:pointer;text-align:left;display:grid}
+.floors button b{font-size:14px}
+.floors button span{font-size:11px;color:var(--muted)}
+.floors button[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.toggles{display:grid}
+.toggles label{display:flex;align-items:center;gap:10px;padding:4px 2px;cursor:pointer;font-size:13.5px}
+.toggles input{accent-color:var(--ink);width:15px;height:15px;margin:0}
+.list-head{padding:10px 18px 4px;font-size:12px;color:var(--muted)}
+.list{list-style:none;margin:0;padding:0 10px 16px;overflow:auto;flex:1;min-height:0}
+.list .sec{padding:12px 8px 4px;font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.list button{width:100%;display:flex;align-items:center;gap:10px;border:0;background:none;border-radius:9px;padding:7px 8px;text-align:left;cursor:pointer}
+.list button:hover{background:var(--panel-2)}
+.list .nm{font-weight:600;min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.list .no{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.list .no.link{color:var(--ok)}
+.list .ic{width:22px;height:22px;border-radius:6px;flex:none}
+.map{position:relative;min-width:0;min-height:0;overflow:hidden;background:#fafafa}
+#scene{display:block;width:100%;height:100%;touch-action:none}
+.ov{position:absolute;z-index:2}
+.status{top:16px;left:16px;max-width:min(560px,calc(100% - 32px));background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:8px 12px;font-size:12.5px;color:var(--muted)}
+.status b{color:var(--ink);font-weight:700}
+.status.warn{color:var(--warn)}
+.zoom{right:16px;bottom:16px;display:grid;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.zoom button{width:40px;height:40px;border:0;background:var(--panel);cursor:pointer;font-size:18px;font-weight:600}
+.zoom button+button{border-top:1px solid var(--line)}
+.card{left:16px;bottom:16px;width:min(340px,calc(100% - 90px));max-height:calc(100% - 90px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:14px 16px;display:grid;gap:6px}
+.card h2{margin:0;font-size:18px;font-weight:700;padding-right:28px}
+.card .meta{color:var(--muted);font-size:12.5px}
+.card .meta.link{color:var(--ok)}
+.card .x{position:absolute;top:10px;right:10px;border:0;background:var(--panel-2);border-radius:8px;width:26px;height:26px;cursor:pointer}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:var(--panel);border-radius:9px;padding:7px 12px;font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--panel-2)}
+.btn.primary{background:var(--ink);border-color:var(--ink);color:#fff}
+.btn.primary:hover{background:#3a3d42}
+.btn.ghost{border-color:transparent;background:none;color:var(--muted)}
+.btn.ghost:hover{background:var(--panel-2);color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:default}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;background:var(--panel-2);padding:4px;border-radius:12px}
+.seg button{border:0;background:transparent;border-radius:9px;padding:5px 8px;font-weight:600;font-size:13px;cursor:pointer;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--panel);color:var(--ink);box-shadow:0 1px 3px rgba(20,20,20,.12)}
+.seg button:disabled{opacity:.4;cursor:default}
+.ed{display:grid;gap:12px;padding-top:10px;border-top:1px solid var(--line);margin-top:4px}
+.f{display:grid;gap:5px;font-size:12px;font-weight:600;color:var(--muted)}
+.f .top{display:flex;justify-content:space-between}
+.f output{font-weight:500}
+.f input[type=text],.f select{border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:14px;font-weight:500;color:var(--ink);background:var(--panel);font-family:inherit}
+.f input[type=text]:focus{border-color:var(--ink);outline:none}
+.f input[type=range]{width:100%;accent-color:var(--ink);margin:0}
+.logo-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.logo-row img{width:56px;height:36px;object-fit:contain;border:1px solid var(--line);border-radius:8px;background:repeating-conic-gradient(#f1f1ef 0 25%,#fff 0 50%) 0 0/10px 10px}
+.file{position:relative;overflow:hidden}
+.file input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.grp.off{opacity:.45;pointer-events:none}
+#ed.nolabel .lbl{display:none}
+.swatches{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.swatches button,.sw-pick{width:26px;height:26px;border-radius:8px;border:1px solid rgba(0,0,0,.16);cursor:pointer;padding:0;flex:none}
+.swatches button[aria-pressed="true"],.sw-pick.on{box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--ink)}
+.sw-pick{position:relative;overflow:hidden;background:conic-gradient(#f66,#fd5,#7d7,#6cf,#86f,#f6c,#f66)}
+.sw-pick input{position:absolute;inset:-4px;width:calc(100% + 8px);height:calc(100% + 8px);opacity:0;cursor:pointer;border:0;padding:0}
+.row{display:flex;align-items:center;gap:6px}
+.row .sp{flex:1}
+.note{margin:0;font-size:12px;color:var(--muted)}
+.note:empty{display:none}
+.note.warn{color:var(--warn)}
+.tip{position:absolute;left:0;top:0;z-index:3;pointer-events:none;background:var(--ink);color:#fff;padding:5px 9px;border-radius:8px;font-size:12px;font-weight:600;white-space:nowrap}
+@media (max-width:760px){
+  html,body{height:auto;overflow:auto}
+  .app{display:flex;flex-direction:column;height:auto}
+  .map{height:70svh;min-height:440px;order:-1}
+  .side{border-right:0;border-top:1px solid var(--line)}
+  .list{overflow:visible}
+  .card{width:calc(100% - 80px)}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="head">
+      <span class="eyebrow">BSB Directory · editor</span>
+      <h1>Peta 3D</h1>
+      <p>Klik bangunan untuk mengganti nama dan logo di atap. Yang disimpan di sini langsung tampil di kiosk dan halaman HP.</p>
+    </div>
+    <div class="block">
+      <span class="label">Lantai 3D</span>
+      <div class="floors" id="floors"></div>
+    </div>
+    <div class="block">
+      <span class="label">Lapisan</span>
+      <div class="toggles">
+        <label for="t-slab"><input type="checkbox" id="t-slab" checked> Lantai mall</label>
+        <label for="t-units"><input type="checkbox" id="t-units" checked> Bangunan tenant</label>
+        <label for="t-names"><input type="checkbox" id="t-names" checked> Nama tenant</label>
+        <label for="t-logos"><input type="checkbox" id="t-logos" checked> Logo di atap</label>
+        <label for="t-fac"><input type="checkbox" id="t-fac" checked> Ikon fasilitas</label>
+      </div>
+    </div>
+    <div class="list-head" id="count">Memuat…</div>
+    <ul class="list" id="list"></ul>
+  </aside>
+  <main class="map" id="map">
+    <canvas id="scene" aria-label="Peta 3D"></canvas>
+    <div class="ov status" id="status">Memuat…</div>
+    <div class="ov zoom">
+      <button id="zin" aria-label="Perbesar">+</button>
+      <button id="zout" aria-label="Perkecil">−</button>
+      <button id="reset" aria-label="Kembali ke tampilan kiosk">⟲</button>
+    </div>
+    <section class="ov card" id="card" hidden>
+      <button class="x" id="c-close" aria-label="Tutup">×</button>
+      <h2 id="c-name"></h2>
+      <div class="meta" id="c-meta"></div>
+      <div class="meta" id="c-link"></div>
+      <div class="actions" id="c-actions"><button class="btn" id="c-edit">Ubah nama, logo &amp; warna</button></div>
+      <form class="ed" id="ed" hidden>
+        <label class="f lbl">Nama tampil di atap
+          <input id="ed-name" type="text" autocomplete="off" spellcheck="false">
+        </label>
+        <div class="f"><span class="top">Warna atap <output id="o-color"></output></span>
+          <div class="seg" id="ed-tone"><button type="button" data-v="auto">Otomatis</button><button type="button" data-v="light">Terang</button><button type="button" data-v="dark">Gelap</button></div>
+          <div class="swatches" id="ed-swatches"><label class="sw-pick" title="Warna lain…"><input id="ed-color" type="color" aria-label="Pilih warna atap lain"></label></div>
+        </div>
+        <label class="f lbl" id="ed-cat-row">Kategori di kiosk (tenant peta)
+          <select id="ed-cat"></select>
+        </label>
+        <div class="f lbl"><span>Logo</span>
+          <div class="logo-row">
+            <img id="ed-thumb" alt="" hidden>
+            <label class="btn file">Pilih gambar…<input id="ed-file" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"></label>
+            <button type="button" class="btn ghost" id="ed-clear">Hapus logo</button>
+          </div>
+        </div>
+        <div class="f lbl"><span>Tampil di atap</span>
+          <div class="seg" id="ed-show"><button type="button" data-v="logo">Logo</button><button type="button" data-v="name">Nama</button></div>
+        </div>
+        <div class="f grp lbl" id="ed-logo-grp"><span>Gaya logo</span>
+          <div class="seg" id="ed-style"><button type="button" data-v="emboss">Timbul 3D</button><button type="button" data-v="plate">Papan</button></div>
+        </div>
+        <label class="f lbl"><span class="top">Ukuran <output id="o-scale"></output></span><input id="ed-scale" type="range" min="30" max="200" step="5"></label>
+        <label class="f lbl"><span class="top">Putar <output id="o-rot"></output></span><input id="ed-rot" type="range" min="-180" max="180" step="5"></label>
+        <label class="f lbl"><span class="top">Geser kiri – kanan <output id="o-dx"></output></span><input id="ed-dx" type="range" step="0.1"></label>
+        <label class="f lbl"><span class="top">Geser bawah – atas <output id="o-dy"></output></span><input id="ed-dy" type="range" step="0.1"></label>
+        <div class="row">
+          <button type="button" class="btn ghost" id="ed-reset">Kembalikan asli</button><span class="sp"></span>
+          <button type="button" class="btn" id="ed-cancel">Batal</button>
+          <button type="submit" class="btn primary" id="ed-save">Simpan</button>
+        </div>
+        <p class="note" id="ed-note" aria-live="polite"></p>
+      </form>
+    </section>
+    <div class="tip" id="tip" hidden></div>
+  </main>
+</div>
+<script src="assets/vendor/three.min.js"></script>
+<script src="assets/vendor/OrbitControls.js"></script>
+<script>window.BSB = window.BSB || {}; BSB.ROOT = '';</script>
+<script src="js/scene3d.js"></script>
+<script>
+(function () {
+  var B = window.BSB, S3 = B.Scene3D, DEG = Math.PI / 180, FAC = S3.FAC;
+  var KIND = { tenant: 'Tenant', anchor: 'Anchor', kiosk: 'Kios / booth', unit: 'Unit', facility: 'Fasilitas', vacant: 'Unit' };
+  var $ = function (s) { return document.querySelector(s); };
+  var params = new URLSearchParams(location.search);
+  var state = { floor: null, api: false, cms: false, csrf: '', reg: {}, dir: null, selected: null, unitIds: {} };
+  var CMS_TOP = params.get('cms') === '1' && window.top !== window; // inside CMS > Peta 3D
+  function getJSON(url, optional) {
+    return fetch(url + (url.indexOf('?') < 0 ? '?t=' : '&t=') + Date.now(), { cache: 'no-store' }).then(function (r) {
+      if (!r.ok) { if (optional) return null; throw new Error(url + ' ' + r.status); }
+      return r.json();
+    }).catch(function (e) { if (optional) return null; throw e; });
+  }
+
+  var canvas = $('#scene'), mapEl = $('#map');
+  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setClearColor(0x000000, 0);
+  var sc = new S3({ root: '', aniso: Math.min(8, renderer.capabilities.getMaxAnisotropy()), onChange: function () { dirty = true; } });
+  var VIEW = 220, view = { az: 45, polar: 54.736 };
+  var camera = new THREE.OrthographicCamera(-VIEW / 2, VIEW / 2, VIEW / 2, -VIEW / 2, 1, 6000);
+  var controls = new THREE.OrbitControls(camera, canvas);
+  controls.enableDamping = true; controls.dampingFactor = 0.09;
+  controls.screenSpacePanning = false; controls.maxPolarAngle = 75 * DEG;
+  controls.minZoom = 0.4; controls.maxZoom = 14;
+  var dirty = true;
+  controls.addEventListener('change', function () { dirty = true; });
+
+  // ---------- floors ----------
+  function floorName(fid) {
+    var f = state.dir && state.dir.floors.filter(function (x) { return x.id === fid; })[0];
+    return f ? (f.nameId || f.name) : fid;
+  }
+  // the directory tenant shown on a unit: linked in the CMS (tenant.unitShape), else by register_floor.py (older floors)
+  function tenantOf(unitId) {
+    if (!state.dir) return null;
+    var t = state.dir.tenants.filter(function (x) { return x.floor === state.floor && x.unitShape === unitId; })[0];
+    if (t) return t;
+    var e = state.reg[state.floor], tid = e && e.tenants && e.tenants[unitId];
+    t = tid && state.dir.tenants.filter(function (x) { return x.id === tid; })[0];
+    return t && !state.unitIds[t.unitShape] ? t : null; // a 2D shape id from the old drawing doesn't count as a CMS link
+  }
+  function hiddenUnit(unitId) {
+    var f = state.dir && state.dir.floors.filter(function (x) { return x.id === state.floor; })[0];
+    return !!(f && (f.unitsHidden || []).indexOf(unitId) >= 0 && !tenantOf(unitId));
+  }
+  // roofs show what the kiosk shows: the CMS tenant's name (brand) and logo unless edited here; switched-off tenants leave a blank roof
+  function decorateFromCms(model) {
+    state.unitIds = {}; model.units.forEach(function (u) { state.unitIds[u.id] = 1; });
+    model.units.forEach(function (u) {
+      var t = tenantOf(u.id);
+      u.display = t ? (t.brand && t.name && t.name.indexOf(t.brand + ' · ') === 0 ? t.brand : t.name) : undefined;
+      u.logoCms = t ? t.logo || null : undefined;
+      u.off = hiddenUnit(u.id) || undefined;
+    });
+  }
+  function cmsLink(t) {
+    var a = document.createElement('a');
+    a.href = 'cms/#/tenants/' + encodeURIComponent(t.id); a.target = CMS_TOP ? '_top' : '_blank'; a.textContent = 'buka di CMS';
+    return a;
+  }
+  function renderFloors() {
+    var box = $('#floors'); box.innerHTML = '';
+    Object.keys(state.reg).forEach(function (fid) {
+      var b = document.createElement('button'), f = state.dir && state.dir.floors.filter(function (x) { return x.id === fid; })[0];
+      b.dataset.floor = fid;
+      b.innerHTML = '<b></b><span></span>';
+      b.querySelector('b').textContent = f ? f.short + (f.building && f.building !== 'both' ? ' · ' + (f.building === 'ewalk' ? 'E-Walk' : 'Pentacity') : '') : fid;
+      b.querySelector('span').textContent = fid;
+      b.setAttribute('aria-pressed', String(fid === state.floor));
+      b.addEventListener('click', function () { showFloor(fid); });
+      box.appendChild(b);
+    });
+  }
+  function showFloor(fid) {
+    closeEditor(false); select(null);
+    state.floor = fid;
+    try { localStorage.setItem('ed3d:floor', fid); } catch (e) { /* ignore */ }
+    renderFloors();
+    var e = state.reg[fid], v = e.view || {};
+    view = { az: v.azimuth != null ? v.azimuth : 45, polar: v.polar != null ? v.polar : 54.736 };
+    Promise.all([getJSON(e.model), e.edits ? getJSON(e.edits, true) : null]).then(function (r) {
+      if (state.floor !== fid) return;
+      sc.setBase(view.az, view.polar);
+      decorateFromCms(r[0]);
+      sc.build(r[0], r[1] || { units: {} }, e.tenants);
+      applyToggles(); renderList(); setStatus(); fitView(false); dirty = true;
+      var want = params.get('edit');
+      if (want) { var u = sc.unit(want); if (u) { select(u, true); openEditor(u); } }
+    }).catch(function (err) { $('#status').textContent = 'Gagal memuat lantai: ' + err.message; });
+  }
+  function setStatus() {
+    var el = $('#status'); el.innerHTML = ''; el.className = 'ov status' + (state.api ? '' : ' warn');
+    var b = document.createElement('b'); b.textContent = floorName(state.floor); el.appendChild(b);
+    el.appendChild(document.createTextNode(state.api
+      ? ' · Seret untuk memutar, klik kanan untuk menggeser. ⟲ kembali ke sudut pandang kiosk.'
+      : ' · Mode lihat saja: ' + readOnlyWhy()));
+  }
+  function readOnlyWhy() {
+    return state.cms ? (state.cmsRole === false ? 'akun CMS ini tidak boleh mengubah tenant.' : 'login CMS dulu supaya perubahan bisa disimpan.')
+      : 'jalankan python3 tools/3d/serve3d.py (atau server PHP CMS) supaya perubahan bisa disimpan.';
+  }
+  function applyToggles() {
+    sc.setVisible({ slab: $('#t-slab').checked, units: $('#t-units').checked, names: $('#t-names').checked, logos: $('#t-logos').checked, fac: $('#t-fac').checked });
+    dirty = true;
+  }
+  ['#t-slab', '#t-units', '#t-names', '#t-logos', '#t-fac'].forEach(function (s) { $(s).addEventListener('change', applyToggles); });
+
+  function listButton(text, sub, subCls, onClick, iconType) {
+    var li = document.createElement('li'), b = document.createElement('button');
+    if (iconType) { var im = document.createElement('img'); im.className = 'ic'; im.alt = ''; im.src = S3.iconDataURL(iconType); b.appendChild(im); }
+    var nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = text;
+    var no = document.createElement('span'); no.className = 'no' + (subCls ? ' ' + subCls : ''); no.textContent = sub || '';
+    b.appendChild(nm); b.appendChild(no);
+    b.addEventListener('click', onClick);
+    li.appendChild(b);
+    return li;
+  }
+  function section(text) { var li = document.createElement('li'); li.className = 'sec'; li.textContent = text; return li; }
+  function renderList() {
+    var list = $('#list'); list.innerHTML = '';
+    var m = sc.model; if (!m) return;
+    var units = m.units.filter(function (u) { return u.label && sc.nameOf(u); });
+    units.sort(function (a, b) { return sc.nameOf(a).localeCompare(sc.nameOf(b), 'id'); });
+    var unnamed = m.units.filter(function (u) { return !sc.nameOf(u); }); // a roof colour can be set on these too
+    list.appendChild(section('Tenant'));
+    units.forEach(function (u) {
+      var linked = !!tenantOf(u.id);
+      list.appendChild(listButton(sc.nameOf(u), u.off ? 'nonaktif di CMS' : linked ? 'tenant CMS' : 'tenant peta', linked ? 'link' : '', function () { select(u, true); }));
+    });
+    if (unnamed.length) {
+      list.appendChild(section('Unit tanpa nama'));
+      unnamed.forEach(function (u) { list.appendChild(listButton(KIND[u.kind] || 'Unit', '± ' + Math.round(u.area_calc_m2) + ' m²', '', function () { select(u, true); })); });
+    }
+    if (m.facilities.length) {
+      list.appendChild(section('Fasilitas'));
+      m.facilities.forEach(function (f) { list.appendChild(listButton(FAC[f.type] || f.name, '', '', function () { selectFac(f, true); }, f.type)); });
+    }
+    $('#count').textContent = units.length + ' tenant bernama · ' + m.units.length + ' unit · ' + m.facilities.length + ' fasilitas';
+  }
+
+  // ---------- camera ----------
+  var tween = null, fitted = false;
+  function viewFrom(target, r) { return target.clone().add(new THREE.Vector3().setFromSpherical(new THREE.Spherical(r, view.polar * DEG, view.az * DEG))); }
+  function fitView(animate) {
+    var pts = []; (sc.model && sc.model.slab || []).forEach(function (s) { s.outer.forEach(function (p) { pts.push(p); }); });
+    if (!pts.length) return;
+    var c = new THREE.Vector3(0, 0, 0), pos = viewFrom(c, 1500);
+    var cam = camera.clone(); cam.position.copy(pos); cam.lookAt(c); cam.updateMatrixWorld();
+    var inv = cam.matrixWorldInverse, v = new THREE.Vector3(), mnx = Infinity, mxx = -Infinity, mny = Infinity, mxy = -Infinity;
+    pts.forEach(function (p) { [0, S3.SLAB_H + 6].forEach(function (y) {
+      v.set(p[0], y, p[1]).applyMatrix4(inv); mnx = Math.min(mnx, v.x); mxx = Math.max(mxx, v.x); mny = Math.min(mny, v.y); mxy = Math.max(mxy, v.y);
+    }); });
+    var mid = new THREE.Vector3((mnx + mxx) / 2, (mny + mxy) / 2, 0).applyMatrix4(cam.matrixWorld);
+    var dir = c.clone().sub(pos).normalize();
+    c = mid.clone().addScaledVector(dir, -mid.y / dir.y); c.y = 0;
+    pos = viewFrom(c, 1500);
+    var aspect = (camera.right - camera.left) / (camera.top - camera.bottom);
+    var z = Math.min(VIEW * aspect / Math.max(1, mxx - mnx), VIEW / Math.max(1, mxy - mny)) * 0.9;
+    flyTo(pos, c, animate ? 700 : 0, THREE.MathUtils.clamp(z, controls.minZoom, controls.maxZoom));
+    fitted = true;
+  }
+  function flyTo(pos, target, ms, zoomTo) {
+    var z1 = zoomTo || camera.zoom;
+    if (!ms) { camera.position.copy(pos); controls.target.copy(target); camera.zoom = z1; camera.updateProjectionMatrix(); controls.update(); dirty = true; return; }
+    tween = { p0: camera.position.clone(), t0: controls.target.clone(), p1: pos, t1: target, z0: camera.zoom, z1: z1, start: performance.now(), ms: ms };
+  }
+  controls.addEventListener('start', function () { tween = null; fitted = false; });
+  function zoom(f) { fitted = false; flyTo(camera.position.clone(), controls.target.clone(), 300, THREE.MathUtils.clamp(camera.zoom / f, controls.minZoom, controls.maxZoom)); }
+  function flyToPoint(x, y, minZoom) {
+    var t = new THREE.Vector3(x, S3.SLAB_H, y), off = camera.position.clone().sub(controls.target);
+    fitted = false; flyTo(t.clone().add(off), t, 700, Math.max(camera.zoom, minZoom));
+  }
+  $('#zin').addEventListener('click', function () { zoom(0.75); });
+  $('#zout').addEventListener('click', function () { zoom(1.33); });
+  $('#reset').addEventListener('click', function () { fitView(true); });
+
+  // ---------- selection ----------
+  function fillCard(u) {
+    $('#c-name').textContent = sc.nameOf(u) || KIND[u.kind] || 'Unit';
+    var bits = [KIND[u.kind] || 'Unit'];
+    if (u.area_m2) bits.push(u.area_m2 + ' m²'); else if (u.area_calc_m2) bits.push('± ' + Math.round(u.area_calc_m2) + ' m²');
+    $('#c-meta').textContent = bits.join(' · ');
+    var t = tenantOf(u.id), ln = $('#c-link');
+    ln.className = 'meta' + (t ? ' link' : '');
+    ln.textContent = t ? 'Tenant CMS: ' + t.name + '. Nama, logo, status & detail diatur di CMS (Tenant); isian di sini hanya mengubah tampilan atap. '
+      : u.off ? 'Tenantnya dinonaktifkan di CMS — atap kosong di kiosk. '
+      : (sc.nameOf(u) ? 'Belum ada di CMS — tampil di kiosk sebagai tenant peta (bisa diklik, dicari & diberi rute). Buat tenantnya di CMS > Peta 3D.' : 'Unit tanpa nama — beri nama supaya muncul di kiosk');
+    if (t) ln.appendChild(cmsLink(t));
+  }
+  function select(u, fly) {
+    if (ed.unit && ed.unit !== u) closeEditor(false);
+    state.selected = u;
+    sc.highlight(u ? u.id : null); dirty = true;
+    var card = $('#card');
+    if (!u) { card.hidden = true; return; }
+    fillCard(u);
+    $('#c-actions').hidden = !!ed.unit;
+    $('#c-edit').textContent = u.label ? 'Ubah nama, logo & warna' : 'Ubah warna atap';
+    card.hidden = false;
+    if (fly) { var c = u.label ? [u.label.x, u.label.y] : S3.centroid(u.poly); flyToPoint(c[0], c[1], 2); }
+  }
+  function selectFac(f, fly) {
+    closeEditor(false); select(null);
+    $('#c-name').textContent = FAC[f.type] || f.name;
+    $('#c-meta').textContent = 'Fasilitas' + (f.name && f.name.toLowerCase() !== (FAC[f.type] || '').toLowerCase() ? ' · ' + f.name : '');
+    $('#c-link').textContent = 'Ikon fasilitas diambil dari layer "Fasilitas" di file Illustrator.'; $('#c-link').className = 'meta';
+    $('#c-actions').hidden = true;
+    $('#card').hidden = false;
+    if (fly) flyToPoint(f.x, f.y, 2.4);
+  }
+  $('#c-close').addEventListener('click', function () { closeEditor(false); select(null); });
+
+  // ---------- editor: custom name, logo upload and placement ----------
+  var ed = { unit: null, before: null };
+  function E() { return sc.edits.units; }
+  function note(text, cls) { var n = $('#ed-note'); n.textContent = text || ''; n.className = 'note' + (cls ? ' ' + cls : ''); }
+  function pressSeg(sel, v) { document.querySelectorAll(sel + ' button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.v === v)); }); }
+  function ensureOv(u) { return E()[u.id] || (E()[u.id] = {}); }
+  function compact(o) {
+    ['name', 'dx', 'dy', 'rot'].forEach(function (k) { if (!o[k]) delete o[k]; });
+    if (o.scale === 1) delete o.scale;
+    if (o.style === 'emboss') delete o.style;
+    return o;
+  }
+  function catChoice(u) {
+    var row = $('#ed-cat-row'), sel = $('#ed-cat'), cats = (state.dir && state.dir.categories) || [];
+    row.hidden = !!tenantOf(u.id) || !cats.length; // directory tenants take their category from the CMS
+    if (row.hidden) return;
+    if (!sel.options.length) cats.forEach(function (c) { var o = document.createElement('option'); o.value = c.id; o.textContent = c.nameId || c.name; sel.appendChild(o); });
+    sel.value = sc.ovOf(u).category || S3.guessCategory(sc.nameOf(u));
+  }
+  function fillEditor(u) {
+    catChoice(u);
+    var o = sc.ovOf(u), logo = sc.logoOf(u), lb = u.label || { w: 4, h: 4 }, reach = Math.max(4, Math.round(Math.max(lb.w, lb.h) * 0.6));
+    $('#ed').classList.toggle('nolabel', !u.label); // a unit without a name box can only take a colour
+    $('#ed-name').value = o.name || '';
+    $('#ed-name').placeholder = sc.baseName(u) || 'Nama tenant';
+    var th = $('#ed-thumb'); th.hidden = !logo; if (logo) th.src = sc.url(logo);
+    $('#ed-clear').disabled = !logo;
+    pressSeg('#ed-show', sc.showOf(u)); pressSeg('#ed-style', o.style || 'emboss'); showColor(o);
+    document.querySelector('#ed-show button[data-v=logo]').disabled = !logo;
+    $('#ed-logo-grp').classList.toggle('off', !logo || sc.showOf(u) !== 'logo');
+    $('#ed-scale').value = Math.round((o.scale || 1) * 100);
+    $('#ed-rot').value = o.rot || 0;
+    ['#ed-dx', '#ed-dy'].forEach(function (s) { $(s).min = -reach; $(s).max = reach; });
+    $('#ed-dx').value = o.dx || 0; $('#ed-dy').value = o.dy || 0;
+    outputs();
+  }
+  function outputs() {
+    $('#o-scale').textContent = $('#ed-scale').value + '%';
+    $('#o-rot').textContent = $('#ed-rot').value + '°';
+    $('#o-dx').textContent = (+$('#ed-dx').value).toFixed(1) + ' m';
+    $('#o-dy').textContent = (+$('#ed-dy').value).toFixed(1) + ' m';
+  }
+  var pending = 0;
+  function redecorate(u) {
+    if (pending) return;
+    pending = requestAnimationFrame(function () { pending = 0; sc.decorate(u); dirty = true; fillCard(u); });
+  }
+  function openEditor(u) {
+    if (!u) return;
+    ed.unit = u;
+    ed.before = E()[u.id] ? JSON.parse(JSON.stringify(E()[u.id])) : null;
+    fillEditor(u);
+    note(state.api ? '' : 'Mode lihat saja: ' + readOnlyWhy(), state.api ? '' : 'warn');
+    $('#ed').hidden = false; $('#c-actions').hidden = true;
+    sc.highlight(null); dirty = true; // its real roof colour shows while editing
+    if (u.label) $('#ed-name').focus();
+  }
+  function closeEditor(keep) {
+    if (!ed.unit) return;
+    var u = ed.unit;
+    if (!keep) { if (ed.before) E()[u.id] = ed.before; else delete E()[u.id]; }
+    ed.unit = null; ed.before = null;
+    $('#ed').hidden = true; $('#c-actions').hidden = false;
+    sc.decorate(u); sc.highlight(state.selected ? state.selected.id : null); dirty = true;
+    fillCard(u);
+  }
+  $('#c-edit').addEventListener('click', function () { openEditor(state.selected); });
+  $('#ed-cancel').addEventListener('click', function () { closeEditor(false); });
+  $('#ed-name').addEventListener('input', function (e) {
+    if (!ed.unit) return;
+    ensureOv(ed.unit).name = e.target.value; redecorate(ed.unit);
+    if (!sc.ovOf(ed.unit).category) catChoice(ed.unit); // the guess follows the name until a category is picked
+  });
+  $('#ed-cat').addEventListener('change', function (e) { if (ed.unit) ensureOv(ed.unit).category = e.target.value; });
+  [['#ed-scale', 'scale', 0.01], ['#ed-rot', 'rot', 1], ['#ed-dx', 'dx', 1], ['#ed-dy', 'dy', 1]].forEach(function (s) {
+    $(s[0]).addEventListener('input', function (e) {
+      if (!ed.unit) return;
+      ensureOv(ed.unit)[s[1]] = Math.round(+e.target.value * s[2] * 100) / 100;
+      outputs(); redecorate(ed.unit);
+    });
+  });
+  $('#ed-show').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b || !ed.unit || b.disabled) return;
+    ensureOv(ed.unit).show = b.dataset.v; fillEditor(ed.unit); redecorate(ed.unit);
+  });
+  $('#ed-style').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b || !ed.unit) return;
+    ensureOv(ed.unit).style = b.dataset.v; pressSeg('#ed-style', b.dataset.v); redecorate(ed.unit);
+  });
+  // roof colour: automatic tone (anchors dark, shops light, empty units light grey), light / dark, a tidy swatch or any colour
+  var SWATCHES = [['#e8e8e8', 'Putih'], ['#c9c9c9', 'Abu muda'], ['#8d8d8d', 'Abu gelap'], ['#5b5f66', 'Arang'], ['#ddd3b8', 'Krem'],
+    ['#e9b8b0', 'Salem'], ['#ecd59a', 'Kuning'], ['#b9d6b0', 'Hijau'], ['#aac8e4', 'Biru'], ['#c9b8e0', 'Ungu']];
+  SWATCHES.forEach(function (sw) {
+    var b = document.createElement('button'); b.type = 'button'; b.dataset.c = sw[0]; b.title = sw[1]; b.style.background = sw[0];
+    b.setAttribute('aria-label', 'Warna atap ' + sw[1]);
+    $('#ed-swatches').insertBefore(b, $('#ed-swatches .sw-pick'));
+  });
+  function showColor(o) {
+    pressSeg('#ed-tone', o.color ? '' : o.tone || 'auto');
+    document.querySelectorAll('#ed-swatches button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.c === o.color)); });
+    $('#ed-swatches .sw-pick').classList.toggle('on', !!o.color && !SWATCHES.some(function (s) { return s[0] === o.color; }));
+    $('#ed-color').value = o.color || '#e8e8e8';
+    $('#o-color').textContent = o.color || '';
+  }
+  function setColor(c) { var o = ensureOv(ed.unit); o.color = c; delete o.tone; showColor(o); redecorate(ed.unit); }
+  $('#ed-tone').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b || !ed.unit) return;
+    var o = ensureOv(ed.unit); delete o.color;
+    if (b.dataset.v === 'auto') delete o.tone; else o.tone = b.dataset.v;
+    showColor(o); redecorate(ed.unit);
+  });
+  $('#ed-swatches').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b && ed.unit) setColor(b.dataset.c); });
+  $('#ed-color').addEventListener('input', function (e) { if (ed.unit) setColor(e.target.value.toLowerCase()); });
+  $('#ed-clear').addEventListener('click', function () {
+    if (!ed.unit) return;
+    var o = ensureOv(ed.unit); o.logo = ''; delete o.show; fillEditor(ed.unit); redecorate(ed.unit);
+  });
+  $('#ed-reset').addEventListener('click', function () {
+    if (!ed.unit) return;
+    delete E()[ed.unit.id]; fillEditor(ed.unit); redecorate(ed.unit);
+    note('Kembali ke data asli. Tekan Simpan untuk menetapkan.');
+  });
+  // Any picked image becomes a PNG (max 1024 px) before upload; white backgrounds are cut out when shown.
+  function fileToPng(file) {
+    return new Promise(function (res, rej) {
+      var url = URL.createObjectURL(file), img = new Image();
+      img.onload = function () {
+        var w = img.naturalWidth || 1024, h = img.naturalHeight || 1024, k = Math.min(1, 1024 / Math.max(w, h));
+        var cv = document.createElement('canvas'); cv.width = Math.max(1, Math.round(w * k)); cv.height = Math.max(1, Math.round(h * k));
+        cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+        URL.revokeObjectURL(url);
+        cv.toBlob(function (b) { if (b) res(b); else rej(new Error('png')); }, 'image/png');
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); rej(new Error('image')); };
+      img.src = url;
+    });
+  }
+  $('#ed-file').addEventListener('change', function (e) {
+    var file = e.target.files && e.target.files[0], u = ed.unit;
+    e.target.value = '';
+    if (!file || !u) return;
+    note('Memproses logo…');
+    fileToPng(file).then(function (blob) {
+      if (!state.api) return URL.createObjectURL(blob); // preview only, cannot be saved without a server
+      return fetch(apiPath('logo') + '?name=' + encodeURIComponent(sc.nameOf(u) || u.id), { method: 'POST', headers: apiHeaders('image/png'), body: blob })
+        .then(function (r) { if (!r.ok) throw new Error('upload'); return r.json(); })
+        .then(function (j) { return (j.data || j).path; });
+    }).then(function (path) {
+      if (ed.unit !== u) return;
+      var o = ensureOv(u); o.logo = path; o.show = 'logo';
+      fillEditor(u); redecorate(u);
+      note(state.api ? 'Logo terpasang. Atur ukuran & posisinya, lalu Simpan.' : 'Logo tampil sementara (belum bisa disimpan tanpa server lokal).', state.api ? '' : 'warn');
+    }).catch(function () { note('Gambar tidak bisa dibaca. Coba PNG, JPG, WEBP atau SVG lain.', 'warn'); });
+  });
+  $('#ed').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var u = ed.unit; if (!u) return;
+    var o = E()[u.id];
+    if (o) { compact(o); if (Object.keys(o).length) o.c = S3.centroid(u.poly); else delete E()[u.id]; }
+    if (!state.api) { note('Belum tersimpan: ' + readOnlyWhy(), 'warn'); return; }
+    $('#ed-save').disabled = true;
+    fetch(apiPath('edits') + '?floor=' + encodeURIComponent(state.floor), { method: 'POST', headers: apiHeaders('application/json'), body: JSON.stringify({ units: E() }) })
+      .then(function (r) { if (!r.ok) throw new Error(r.status === 401 || r.status === 403 ? 'auth' : 'save'); })
+      .then(function () { closeEditor(true); renderList(); })
+      .catch(function (err) { note(err.message === 'auth' ? 'Sesi CMS habis atau tidak punya izin — login ulang lalu simpan lagi.' : state.cms ? 'Gagal menyimpan. Cek koneksi ke server CMS.' : 'Gagal menyimpan. Pastikan serve3d.py masih berjalan.', 'warn'); })
+      .then(function () { $('#ed-save').disabled = false; });
+  });
+
+  // ---------- picking ----------
+  var ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), down = null, lastMove = null, tip = $('#tip');
+  function pick(x, y) {
+    var r = canvas.getBoundingClientRect();
+    ndc.set(((x - r.left) / r.width) * 2 - 1, -((y - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    return sc.pick(ray);
+  }
+  canvas.addEventListener('pointerdown', function (e) { down = { x: e.clientX, y: e.clientY }; tip.hidden = true; });
+  canvas.addEventListener('pointermove', function (e) { lastMove = e; });
+  canvas.addEventListener('pointerleave', function () { lastMove = null; tip.hidden = true; });
+  canvas.addEventListener('pointerup', function (e) {
+    if (!down) return;
+    var moved = Math.hypot(e.clientX - down.x, e.clientY - down.y); down = null;
+    if (moved >= 6) return;
+    var p = pick(e.clientX, e.clientY);
+    if (ed.unit && (!p || p.unit !== ed.unit)) return; // while editing, stray clicks on the map don't drop the edit
+    if (p && p.fac) selectFac(p.fac, false); else select(p ? p.unit : null, false);
+  });
+
+  function resize() {
+    var w = mapEl.clientWidth, h = mapEl.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(w, h, false);
+    var aspect = w / h;
+    camera.left = -VIEW * aspect / 2; camera.right = VIEW * aspect / 2; camera.top = VIEW / 2; camera.bottom = -VIEW / 2;
+    camera.updateProjectionMatrix();
+    dirty = true;
+    if (fitted && !tween) fitView(false);
+  }
+  resize();
+  new ResizeObserver(resize).observe(mapEl);
+
+  function frame(now) {
+    if (tween) {
+      var u = Math.min(1, (now - tween.start) / tween.ms);
+      var e = u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
+      camera.position.lerpVectors(tween.p0, tween.p1, e);
+      controls.target.lerpVectors(tween.t0, tween.t1, e);
+      camera.zoom = tween.z0 + (tween.z1 - tween.z0) * e; camera.updateProjectionMatrix();
+      if (u >= 1) tween = null;
+      dirty = true;
+    }
+    controls.update();
+    if (lastMove && !down && lastMove.pointerType === 'mouse') {
+      var p = pick(lastMove.clientX, lastMove.clientY);
+      var text = p ? (p.fac ? FAC[p.fac.type] || p.fac.name : sc.nameOf(p.unit)) : '';
+      canvas.style.cursor = p ? 'pointer' : 'grab';
+      if (text) {
+        var r = mapEl.getBoundingClientRect();
+        tip.textContent = text; tip.hidden = false;
+        tip.style.transform = 'translate(' + Math.min(lastMove.clientX - r.left + 14, r.width - tip.offsetWidth - 8) + 'px,' + (lastMove.clientY - r.top - 34) + 'px)';
+      } else tip.hidden = true;
+    }
+    if (dirty) {
+      dirty = false;
+      sc.setIconSize(THREE.MathUtils.clamp(34 * VIEW / (Math.max(1, mapEl.clientHeight) * camera.zoom), 3, 12));
+      renderer.render(sc.scene, camera);
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  var fontReady = document.fonts && document.fonts.load ? Promise.race([document.fonts.load("600 40px 'Plus Jakarta Sans'"), new Promise(function (r) { setTimeout(r, 1500); })]) : Promise.resolve();
+  // saving: the CMS API (session + CSRF token, needs the tenants.edit permission) or the local serve3d.py
+  function apiPath(what) { return state.cms ? 'api/admin/3d/' + what : 'api/3d/' + what; }
+  function apiHeaders(type) { var h = { 'Content-Type': type }; if (state.cms) h['X-CSRF-Token'] = state.csrf; return h; }
+  function saveAccess(ping) {
+    var p = ping && (ping.data || ping);
+    if (!p || !p.ok) return Promise.resolve(false);
+    if (!p.cms) return Promise.resolve(true);
+    state.cms = true;
+    return fetch('api/admin/auth/me', { cache: 'no-store', credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      var d = j && j.data;
+      if (!d) return false;
+      state.csrf = d.csrfToken || '';
+      state.cmsRole = (d.permissions || []).indexOf('tenants.edit') >= 0;
+      return state.cmsRole;
+    }).catch(function () { return false; });
+  }
+  Promise.all([
+    getJSON('data/3d/floors.json', true), getJSON('data/directory.json', true),
+    fetch('api/3d/ping', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }).then(saveAccess),
+    fontReady.catch(function () {})
+  ]).then(function (r) {
+    state.reg = (r[0] && r[0].floors) || {}; state.dir = r[1]; state.api = !!r[2];
+    var ids = Object.keys(state.reg);
+    if (!ids.length) { $('#status').textContent = 'Belum ada lantai 3D. Jalankan tools/3d/svg_to_3d.py lalu tools/3d/register_floor.py.'; $('#count').textContent = ''; return; }
+    var saved = null; try { saved = localStorage.getItem('ed3d:floor'); } catch (e) { /* ignore */ }
+    showFloor(params.get('floor') && state.reg[params.get('floor')] ? params.get('floor') : (saved && state.reg[saved] ? saved : ids[0]));
+  });
+})();
+</script>
+</body>
+</html>

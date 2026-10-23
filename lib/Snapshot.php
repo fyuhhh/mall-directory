@@ -156,6 +156,8 @@ final class Snapshot
                 'social' => ['instagram' => $t['instagram'], 'tiktok' => $t['tiktok'], 'facebook' => $t['facebook'], 'whatsapp' => $t['whatsapp']],
                 'openingDate' => $t['opening_date'], 'hasUnit' => $t['unit_shape_id'] !== null && $t['unit_shape_id'] !== '',
                 'logo2x' => self::mediaUrl($t['logo_path_2x']),
+                // 3D floors (js/map3d.js): building in data/3d/<model>.json that shows this tenant's name and logo
+                'unitShape' => $t['unit_shape_id'] !== null && $t['unit_shape_id'] !== '' ? $t['unit_shape_id'] : null,
             ];
             $aux['tenantStatus'][$t['id']] = $t['status'];
         }
@@ -163,6 +165,10 @@ final class Snapshot
         // floor SVG publish (§5.4.10)
         $links = [];
         foreach ($trows as $t) if ($t['unit_shape_id']) $links[$t['floor_id']][$t['unit_shape_id']] = $t['id'];
+        // units whose only tenants are hidden (unpublished or closed): 3D roofs stay blank instead of showing the drawing's name
+        $hiddenUnits = [];
+        foreach (Db::all("SELECT floor_id, unit_shape_id FROM tenants WHERE unit_shape_id IS NOT NULL AND unit_shape_id<>'' AND NOT (is_published=1 AND status<>'closed') ORDER BY unit_shape_id") as $h)
+            if (!isset($links[$h['floor_id']][$h['unit_shape_id']])) $hiddenUnits[$h['floor_id']][$h['unit_shape_id']] = true;
         $floorsOut = [];
         $north = Settings::get('map.northDeg');
         foreach ($floors as $f) {
@@ -173,7 +179,7 @@ final class Snapshot
                 'svg' => $svgPath, 'viewBox' => [(float)$f['vb_x'], (float)$f['vb_y'], (float)$f['vb_w'], (float)$f['vb_h']],
                 'unitScale' => (float)$f['unit_scale'], 'focus' => (object)($focus[$f['id']] ?? []),
                 'nameEn' => $f['name_en'], 'nameId' => $f['name_id'], 'northDeg' => $f['north_deg'] === null ? null : (float)$f['north_deg'],
-            ];
+            ] + (isset($hiddenUnits[$f['id']]) ? ['unitsHidden' => array_keys($hiddenUnits[$f['id']])] : []);
         }
 
         // kiosks
@@ -205,7 +211,7 @@ final class Snapshot
             $a = $nodeById[(int)$e['node_a']] ?? null; $b = $nodeById[(int)$e['node_b']] ?? null;
             if (!$a || !$b) continue;
             $cost = $e['cost_override'] !== null ? round((float)$e['cost_override'], 2) : self::walkCost($a, $b, $floorById);
-            $row = ['n' . $e['node_a'], 'n' . $e['node_b'], $cost, 'walk'];
+            $row = ['n' . $e['node_a'], 'n' . $e['node_b'], $cost, $e['type'] === 'stairs' ? 'stairs' : 'walk'];
             $hours = Schedule::hours($e['schedule_id'] ? (int)$e['schedule_id'] : null);
             if ($hours !== null || isset($openEdgeClosures[(int)$e['id']])) {
                 $key = 'E' . $e['id'];

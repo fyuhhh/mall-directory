@@ -20,6 +20,7 @@
   }
   function applyI18n() {
     $$('[data-i18n]').forEach(function (e) { e.textContent = t(e.dataset.i18n); });
+    $$('[data-i18n-aria]').forEach(function (e) { e.setAttribute('aria-label', t(e.dataset.i18nAria)); });
     $$('#langBtn span').forEach(function (s) { s.classList.toggle('on', s.dataset.l === B.lang); });
   }
 
@@ -31,11 +32,13 @@
     kiosk = D.kioskById[kid] || D.kioskById[cfg.DEFAULT_KIOSK] || D.kiosks[0];
     applyProfile(kiosk);
     var ql = new URLSearchParams(location.search).get('lang'); if (ql === 'en' || ql === 'id') B.setLang(ql); else B.setLang(DEF_LANG);
-    map = new B.MapView($('#map'), { pad: MAP_PAD });
+    map = new (B.MapView3D || B.MapView)($('#map'), { pad: MAP_PAD });
     window.BSB_MAP = map; window.BSB_S = S;
     map.onTenantTap = function (tn) { openDetail(tn); };
+    map.onAmenityTap = function (a) { track('amenity_route', { type: a.type, src: 'map' }); S.sel = null; openRoute(amenityTarget(a)); };
+    map.onFacilityTap = function (f) { toast(f.name || f.type); };
     map.onInteract = function () { stopPlay(); };
-    map.onFloor = function () { renderSwitcher(); renderFloorCard(); };
+    map.onFloor = function () { renderSwitcher(); renderFloorCard(); sync3d(); };
     map.setTenantDots(true);
     map.setKiosk(kiosk);
     applyStatus(B.statusData, true);
@@ -674,6 +677,12 @@
     S.kb = false; $('#osk').classList.remove('open'); $('#searchBox').classList.remove('focus'); $('#panel').classList.remove('kb-open');
     $('#list').style.paddingBottom = '';
   }
+  // typing on a physical keyboard: the search opens without the on-screen keyboard (touch still opens that one)
+  function typeStart() {
+    if (!$('#attract').classList.contains('off')) hideAttract();
+    if (S.listMode !== 'search' || $('.view.is-active').dataset.view !== 'list') openList('search', {}, $('.view.is-active').dataset.view !== 'list');
+    $('#searchBox').classList.add('focus');
+  }
   var searchT = 0;
   function setQuery(q) {
     S.query = q;
@@ -709,6 +718,34 @@
       else if (S.query.length < 30) setQuery((S.query + (S.query ? v.toLowerCase() : v)).replace(/^ +/, ''));
     });
     $('#oskQuick').addEventListener('click', function (e) { var c = e.target.closest('[data-q]'); if (c) setQuery(c.dataset.q); });
+    // physical keyboard: any character starts / continues the search; Backspace deletes, Esc clears (then goes back),
+    // ↓ ↑ move through the results and Enter opens the chosen one (or the first)
+    document.addEventListener('keydown', function (e) {
+      if (e.ctrlKey || e.metaKey || e.altKey || e.isComposing) return;
+      if (e.target.closest && e.target.closest('input,textarea,select,[contenteditable]')) return;
+      if (!$('#qrModal').hidden) { if (e.key === 'Escape') closeQrModal(); return; }
+      var k = e.key, searching = S.listMode === 'search' && $('.view.is-active').dataset.view === 'list';
+      if (k.length === 1 && (k !== ' ' || (searching && S.query))) {
+        e.preventDefault();
+        typeStart();
+        if (S.query.length < 30) setQuery((S.query + (S.query ? k.toLowerCase() : k.toUpperCase())).replace(/^ +/, ''));
+        return;
+      }
+      if (!searching) return;
+      if (k === 'Backspace') { e.preventDefault(); setQuery(S.query.slice(0, -1)); }
+      else if (k === 'Escape') { e.preventDefault(); if (S.query) setQuery(''); else { closeKb(); back(); } }
+      else if (k === 'ArrowDown' || k === 'ArrowUp') {
+        var rows = [].slice.call(document.querySelectorAll('#list [data-t], #list [data-pick-kiosk]'));
+        if (!rows.length) return;
+        e.preventDefault();
+        var i = rows.indexOf(document.activeElement);
+        i = k === 'ArrowDown' ? Math.min(rows.length - 1, i + 1) : Math.max(0, i - 1);
+        rows[i].focus(); if (rows[i].scrollIntoView) rows[i].scrollIntoView({ block: 'nearest' });
+      } else if (k === 'Enter') {
+        var a = document.activeElement, row = (a && a.closest && a.closest('#list [data-t], #list [data-pick-kiosk]')) || $('#list [data-t]');
+        if (row) { e.preventDefault(); row.click(); }
+      }
+    });
 
     $('#langBtn').addEventListener('click', function () {
       B.setLang(B.lang === 'id' ? 'en' : 'id');
@@ -822,20 +859,37 @@
       else if (b.dataset.z === 'out') map.zoomBy(1 / 1.5);
       else {
         var f = D.floorById[kiosk.floor], cur = D.floorById[map.floor].level;
+        if (map.resetView) map.resetView(false);
         map.showFloor(kiosk.floor, { building: kiosk.building, dir: f.level >= cur ? 'up' : 'down' });
       }
+    });
+    // 3D floors: turn the map 360 degrees, back to the default view, switch map layers
+    $('#view3dCtl').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-v]'); if (!b || !map.rotateBy) return;
+      stopPlay();
+      if (b.dataset.v === 'left') map.rotateBy(-45);
+      else if (b.dataset.v === 'right') map.rotateBy(45);
+      else if (b.dataset.v === 'north') map.resetView(true);
+      else showLayers3d($('#layers3d').hidden);
+    });
+    $('#layers3d').addEventListener('change', function () {
+      var vis = {};
+      $$('#layers3d input[data-l]').forEach(function (i) { vis[i.dataset.l] = i.checked; });
+      map.setLayers(vis);
     });
 
     // idle tracking
     ['pointerdown', 'keydown'].forEach(function (ev) { document.addEventListener(ev, bump, true); });
   }
 
+  function amenityTarget(a) {
+    return { id: a.id, name: B.amenityName(a), floor: a.floor, building: a.building, x: a.x, y: a.y, node: a.node, category: null, logo: null, poi: a.kind === 'poi' };
+  }
   function routeToAmenity(type) {
     var a = router.nearestAmenity(kiosk.node, type, S.accessible && type !== 'escalator', S.pref);
     if (!a) { toast(t('noRoute')); return; }
-    var target = { id: a.id, name: B.amenityName(a), floor: a.floor, building: a.building, x: a.x, y: a.y, node: a.node, category: null, logo: null, poi: a.kind === 'poi' };
     S.sel = null;
-    openRoute(target);
+    openRoute(amenityTarget(a));
   }
   function toast(msg) {
     var e = $('#toast'); e.textContent = msg; e.hidden = false;
@@ -851,8 +905,22 @@
     resetAll(); showAttract();
     if (B.syncReloadNow) setTimeout(B.syncReloadNow, 1500); // a pending data update reloads right after going idle
   }
+  function sync3d() {
+    var on = !!(map.is3dShown && map.is3dShown());
+    $('#view3dCtl').hidden = !on;
+    if (!on) showLayers3d(false);
+  }
+  function showLayers3d(on) {
+    $('#layers3d').hidden = !on;
+    $('#view3dCtl [data-v="layers"]').setAttribute('aria-expanded', String(!!on));
+  }
   function resetAll() {
-    stopPlay(); closeKb(); closeQrModal(); clearRoute(); setQuery(''); S.stack = []; S.sel = null; S.target = null; S.origin = null; S.pickMode = null; S.plan = null; S.accessible = false; S.pref = 'best';
+    stopPlay(); closeKb(); closeQrModal(); clearRoute(); setQuery('');
+    if (map.resetView) { // a new visitor gets the default view with every layer on
+      map.resetView(false); showLayers3d(false);
+      $$('#layers3d input[data-l]').forEach(function (i) { i.checked = true; });
+      map.setLayers({ slab: true, units: true, names: true, logos: true, fac: true });
+    } S.stack = []; S.sel = null; S.target = null; S.origin = null; S.pickMode = null; S.plan = null; S.accessible = false; S.pref = 'best';
     if (B.lang !== DEF_LANG) { switchingBack = true; $('#langBtn').click(); switchingBack = false; }
     showView('home', false); map.setDest(null); map.setOrigin(null);
     map.showFloor(kiosk.floor, { building: kiosk.building, animate: false });

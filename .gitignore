@@ -25,13 +25,17 @@ config.local.js
 # Temporary & Runtime files
 data/.tmp/
 data/.cron.lock
+data/.publish.lock
 tests/wpc/out/
 *.log
 *.zip
 bsb_directory_cpanel.sql
+_handoff/db/*.tmp
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
 # Dependencies
 node_modules/
+__pycache__/
+*.pyc
