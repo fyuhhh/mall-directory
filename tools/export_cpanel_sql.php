@@ -3,6 +3,10 @@
  * export_cpanel_sql.php
  * Generates a complete, ready-to-import SQL file for cPanel/phpMyAdmin.
  * Includes schema, reference seeds, full mall entities, and default superadmin account.
+ * Built from the published data/directory.json: 3D unit links (tenants[].unitShape), in-floor stairs edges and
+ * facilities (toilets, prayer rooms, ATMs) come along, and the CMS accounts of this computer's database (same login
+ * after the import; the default superadmin only when that database can't be read). Closures, promos, schedules and
+ * unpublished tenants do not; for a copy of everything use  php tools/setup.php dump --cpanel
  */
 declare(strict_types=1);
 
@@ -191,10 +195,10 @@ foreach ($dirJson['graph']['nodes'] as $n) {
     $nodeById[$n['id']] = $n;
 }
 
-// Walk Edges
+// Walk Edges (and in-floor stairs: walkable, skipped in wheelchair mode)
 $seenWalk = [];
 foreach ($dirJson['graph']['edges'] as $e) {
-    if ($e[3] !== 'walk') continue;
+    if ($e[3] !== 'walk' && !($e[3] === 'stairs' && $nodeById[$e[0]]['floor'] === $nodeById[$e[1]]['floor'])) continue;
     $a = (int)substr($e[0], 1);
     $b = (int)substr($e[1], 1);
     if ($a === $b) continue;
@@ -209,7 +213,7 @@ foreach ($dirJson['graph']['edges'] as $e) {
     $row = [
         'node_a' => $a,
         'node_b' => $b,
-        'type' => 'walk',
+        'type' => $e[3],
         'is_enabled' => 1,
         'cost_override' => $override
     ];
@@ -226,8 +230,10 @@ $stopByNode = [];
 $stopConn = [];
 $sortBank = 0;
 $nextStopId = 1;
+$facilities = []; // toilets, prayer rooms, ATMs...: not connectors
 
 foreach ($dirJson['amenities'] as $a) {
+    if (($a['kind'] ?? 'connector') !== 'connector' || empty($a['connectors'])) { $facilities[] = $a; continue; }
     $bank = $bankOf($a['connectors'][0]);
     if (!isset($banks[$bank])) {
         $type = ['escalator' => 'escalator', 'lift' => 'lift', 'crossing' => 'bridge', 'stairs' => 'stairs'][$a['type']];
@@ -268,6 +274,25 @@ foreach ($dirJson['amenities'] as $a) {
     $sqlBuffer[] = buildInsert('connector_stops', $sRow);
     $stopByNode[$a['node']] = ['id' => $sid, 'bank' => $bank, 'floor' => $a['floor']];
     $stopConn[$sid] = $a['connectors'];
+}
+
+// Facilities
+foreach ($facilities as $a) {
+    $sqlBuffer[] = buildInsert('amenities', [
+        'id' => $a['id'],
+        'type_id' => $a['type'],
+        'floor_id' => $a['floor'],
+        'building' => $a['building'] === 'pentacity' ? 'pentacity' : 'ewalk',
+        'x' => $a['x'],
+        'y' => $a['y'],
+        'node_id' => $a['node'] ? (int)substr($a['node'], 1) : null,
+        'name_en' => $a['nameEn'] ?? $a['name'] ?? null,
+        'name_id' => $a['nameId'] ?? null,
+        'detail_en' => $a['detail'] ?? null,
+        'is_wheelchair' => !empty($a['wheelchair']) ? 1 : 0,
+        'gender' => $a['gender'] ?? 'all',
+        'is_published' => 1
+    ]);
 }
 
 // Connector Legs
@@ -379,7 +404,7 @@ foreach ($dirJson['tenants'] as $t) {
         'x' => $t['x'],
         'y' => $t['y'],
         'node_id' => (int)substr($t['node'], 1),
-        'unit_shape_id' => $unit,
+        'unit_shape_id' => $t['unitShape'] ?? $unit,
         'phone' => $t['phone'],
         'url_override' => $urlOv,
         'logo_override_media_id' => $logoOv,
@@ -424,24 +449,42 @@ if (preg_match('/featured:\s*\[([^\]]*)\]/s', $cfgJs, $m)) {
     }
 }
 
-// 4. Create default superadmin
+// 4. CMS accounts: this computer's (same login after the import), else a default superadmin
+$accounts = [];
+try {
+    $accounts = Db::all('SELECT id, email, name, role, password_hash, is_active, must_change_password FROM users WHERE is_active=1 ORDER BY id');
+} catch (Throwable $e) {
+    $accounts = [];
+}
 $sqlBuffer[] = "";
 $sqlBuffer[] = "-- =================================================================";
-$sqlBuffer[] = "-- DEFAULT SUPERADMIN USER";
-$sqlBuffer[] = "-- Login: admin@bsb.id / AdminBSB2026!";
-$sqlBuffer[] = "-- =================================================================";
-$hash = password_hash('AdminBSB2026!', PASSWORD_DEFAULT);
-$adminRow = [
-    'id' => 1,
-    'email' => 'admin@bsb.id',
-    'name' => 'Superadmin BSB',
-    'role' => 'superadmin',
-    'password_hash' => $hash,
-    'is_active' => 1,
-    'must_change_password' => 0,
-    'failed_count' => 0
-];
-$sqlBuffer[] = rtrim(buildInsert('users', $adminRow), ';') . " ON DUPLICATE KEY UPDATE password_hash=VALUES(password_hash);";
+if ($accounts) {
+    $sqlBuffer[] = "-- CMS ACCOUNTS (copied from this computer's database: same login as here)";
+    $sqlBuffer[] = "-- =================================================================";
+    foreach ($accounts as $u) {
+        $sqlBuffer[] = rtrim(buildInsert('users', ['id' => (int)$u['id'], 'email' => $u['email'], 'name' => $u['name'], 'role' => $u['role'],
+            'password_hash' => $u['password_hash'], 'is_active' => 1, 'must_change_password' => (int)$u['must_change_password'], 'failed_count' => 0]), ';')
+            . " ON DUPLICATE KEY UPDATE email=VALUES(email), password_hash=VALUES(password_hash);";
+    }
+    echo "CMS login: " . implode(', ', array_column($accounts, 'email')) . " (same password as this computer)\n";
+} else {
+    $sqlBuffer[] = "-- DEFAULT SUPERADMIN USER";
+    $sqlBuffer[] = "-- Login: admin@bsb.id / AdminBSB2026!";
+    $sqlBuffer[] = "-- =================================================================";
+    $hash = password_hash('AdminBSB2026!', PASSWORD_DEFAULT);
+    $adminRow = [
+        'id' => 1,
+        'email' => 'admin@bsb.id',
+        'name' => 'Superadmin BSB',
+        'role' => 'superadmin',
+        'password_hash' => $hash,
+        'is_active' => 1,
+        'must_change_password' => 0,
+        'failed_count' => 0
+    ];
+    $sqlBuffer[] = rtrim(buildInsert('users', $adminRow), ';') . " ON DUPLICATE KEY UPDATE password_hash=VALUES(password_hash);";
+    echo "CMS login: admin@bsb.id (default; change its password after the deploy)\n";
+}
 $sqlBuffer[] = "";
 $sqlBuffer[] = "SET FOREIGN_KEY_CHECKS = 1;";
 

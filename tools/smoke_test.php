@@ -21,6 +21,10 @@ $email = $opt('--email'); $pw = $opt('--password');
 if ($cf = $opt('--cred')) { $t = (string)file_get_contents($cf); preg_match('/Email\s*:\s*(\S+)/', $t, $m1); preg_match('/Password:\s*(\S+)/', $t, $m2); $email = $m1[1] ?? null; $pw = $m2[1] ?? null; }
 if (!$email || !$pw) { fwrite(STDERR, "butuh --email/--password atau --cred\n"); exit(2); }
 $KEEP = in_array('--keep', $args, true);
+// expectations from the data being tested (not the handoff seed: tenants get added, floors get redrawn)
+$nTenants = (int)Db::val('SELECT COUNT(*) FROM tenants');
+$nNoLogo = (int)Db::val('SELECT COUNT(*) FROM tenants t JOIN brands b ON b.id=t.brand_id WHERE t.logo_override_media_id IS NULL AND b.logo_media_id IS NULL');
+$costsBefore = is_file(APP_ROOT . '/data/directory.json') ? RouteCheck::costMatrix(json_decode((string)file_get_contents(APP_ROOT . '/data/directory.json'), true)) : null;
 
 // ------------------------------------------------------------------ mini HTTP client
 final class C
@@ -91,7 +95,7 @@ $r = $A->login($email, 'salah-password-xyz');
 $ok($r['code'] === 401 && ($r['json']['error']['message'] ?? '') === 'Email atau password salah', 'login salah → 401 pesan generik');
 $r = $A->login($email, $pw);
 $ok($r['code'] === 200 && $A->csrf, 'login superadmin', $err($r));
-$ok(str_contains($r['headers'], 'HttpOnly') && str_contains($r['headers'], 'SameSite=Strict') && str_contains($r['headers'], 'path=/bsb-directory/'), 'cookie BSBSESSID HttpOnly+SameSite=Strict+path');
+$ok(str_contains($r['headers'], 'HttpOnly') && str_contains($r['headers'], 'SameSite=Strict') && str_contains($r['headers'], 'path=' . rtrim((string)parse_url($BASE, PHP_URL_PATH), '/') . '/'), 'cookie BSBSESSID HttpOnly+SameSite=Strict+path');
 $r = $A->req('GET', '/api/admin/auth/me');
 $ok($r['code'] === 200 && $r['json']['data']['user']['role'] === 'superadmin', 'GET /auth/me');
 $tok = $A->csrf; $A->csrf = null;
@@ -123,9 +127,9 @@ $ok($r['code'] === 429, 'lockout 5 gagal → akun terkunci (password benar pun 4
 // ------------------------------------------------------------------ 3. tenant CRUD
 $sec('Tenant CRUD + optimistic lock');
 $r = $A->req('GET', '/api/admin/tenants?per=500');
-$ok($r['code'] === 200 && $r['json']['total'] === 210, 'list tenant total=210', $r['json']['total'] ?? null);
+$ok($r['code'] === 200 && $r['json']['total'] === $nTenants, "list tenant total=$nTenants", $r['json']['total'] ?? null);
 $r = $A->req('GET', '/api/admin/tenants?missing=logo');
-$ok($r['code'] === 200 && $r['json']['total'] === 5, 'filter missing=logo → 5');
+$ok($r['code'] === 200 && $r['json']['total'] === $nNoLogo, "filter missing=logo → $nNoLogo");
 $r = $A->req('GET', '/api/admin/tenants/uniqlo-gf');
 $t = $r['json']['data'] ?? [];
 $ok($r['code'] === 200 && $t['brand']['name'] === 'Uniqlo' && $t['nodeId'] === 266 || $r['code'] === 200, 'GET tenant uniqlo-gf (DTO §4.5)', $err($r));
@@ -146,7 +150,7 @@ $r = $A->req('POST', '/api/admin/tenants', ['brandId' => null, 'brand' => ['name
 $ok($r['code'] === 422, 'url http:// ditolak (422)');
 if ($newT) { $r = $A->req('DELETE', '/api/admin/tenants/' . $newT); $ok($r['code'] === 200, 'DELETE tenant uji'); }
 $r = $A->req('GET', '/api/admin/tenants/export.csv', null, [], true);
-$ok($r['code'] === 200 && substr_count($r['raw'], "\n") === 211, 'export CSV (210 baris + header)');
+$ok($r['code'] === 200 && substr_count($r['raw'], "\n") === $nTenants + 1, "export CSV ($nTenants baris + header)");
 $r = $A->req('POST', '/api/admin/tenants/import.csv?dryRun=1', "id,status\nuniqlo-gf,temp_closed\n", ['Content-Type' => 'text/csv']);
 $ok($r['code'] === 200 && ($r['json']['data']['summary']['update'] ?? 0) === 1 && !$r['json']['data']['applied'], 'import CSV dryRun → 1 update direncanakan', $err($r));
 
@@ -190,7 +194,7 @@ $r = $A->req('GET', '/api/admin/publish/preview?channel=directory');
 $pv = $r['json']['data'] ?? [];
 $chg = $pv['diff']['map']['legs']['changed'] ?? [];
 $ok($r['code'] === 200 && $pv['sectionsChanged'] === ['map'] && $chg && str_contains(json_encode($chg, JSON_UNESCAPED_UNICODE), 'both→up'), 'preview diff: map.legs.changed "direction: both→up"', $chg);
-$ok(($pv['validation']['stats']['reachable'] ?? 0) === 1470, 'validasi tetap 1470/1470 default', $pv['validation']['stats'] ?? null);
+$ok(($pv['validation']['stats']['reachable'] ?? 0) === ($pv['validation']['stats']['pairs'] ?? -1), 'validasi tetap 100% terjangkau (default)', $pv['validation']['stats'] ?? null);
 $r = $A->req('GET', '/api/admin/validate/last');
 $ok($r['code'] === 200 && isset($r['json']['data']['stats']['perKiosk']['gf-pentacity']['default']), 'GET validate/last (+ stats.perKiosk)');
 $r = $A->req('POST', '/api/admin/tenants/bulk', ['ids' => ['barras-ug'], 'set' => ['status' => 'open']]);
@@ -327,9 +331,10 @@ $ok($r['code'] === 200 && str_contains($r['raw'], 'sepatu'), 'export CSV analiti
 
 // ------------------------------------------------------------------ 9. rollback + audit
 $sec('Rollback & audit');
-$r = $A->req('GET', '/api/admin/releases?channel=directory');
+$r = $A->req('GET', '/api/admin/releases?channel=directory&per=500');
 $rels = $r['json']['data'] ?? [];
-$first = end($rels);
+usort($rels, fn($a, $b) => $a['seq'] <=> $b['seq']);
+$first = $rels[0] ?? null; // D0001 (with > 50 releases the first page no longer reaches it)
 $r = $A->req('POST', '/api/admin/releases/' . ($first['id'] ?? 0) . '/rollback');
 $rb = $r['json']['data']['release'] ?? [];
 $ok($r['code'] === 201 && ($rb['rolledBackFrom'] ?? null) === ($first['id'] ?? -1) && $live('directory.json')['meta']['rolledBackFrom'] === $first['version'], 'rollback ke ' . ($first['version'] ?? '?') . ' → rilis baru ' . ($rb['version'] ?? '?'), $err($r));
@@ -363,10 +368,10 @@ if (!$KEEP) {
     $r = $A->req('POST', '/api/admin/publish', ['channel' => 'directory', 'notes' => 'smoke: pemulihan (data = seed)']);
     $fin = $r['json']['data']['release'] ?? [];
     $ok($r['code'] === 201, 'publish pemulihan ' . ($fin['version'] ?? '?'), $err($r));
-    $cmp = RouteCheck::costMatrix(json_decode((string)file_get_contents(APP_ROOT . '/data/releases/legacy-directory.json'), true));
+    $cmp = $costsBefore ?? RouteCheck::costMatrix(json_decode((string)file_get_contents(APP_ROOT . '/data/releases/legacy-directory.json'), true));
     $cur = RouteCheck::costMatrix($live('directory.json'));
     $same = 0; $n = 0; foreach ($cmp as $k => $row) foreach ($row as $tt => $c) { $n++; if (($cur[$k][$tt] ?? 'x') === $c) $same++; }
-    $ok($same === $n, "live setelah pemulihan: biaya rute = legacy ($same/$n)");
+    $ok($same === $n, "live setelah pemulihan: biaya rute = sebelum uji ($same/$n)");
 }
 $r = $A->req('POST', '/api/admin/auth/logout');
 $ok($r['code'] === 200 && $A->req('GET', '/api/admin/auth/me')['code'] === 401, 'logout menghancurkan session');

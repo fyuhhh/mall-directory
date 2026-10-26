@@ -1,7 +1,7 @@
 // Tenant edit — §2.2 / §7.2 #4: tabs Info, Jam, Lokasi (map placement + unit link), Media, Riwayat; kiosk-card preview EN/ID.
 import { h, ic, btn, badge, pageHead, field, input, textarea, select, toggle, segmented, tabs, card, toast, dialog, confirmDlg,
   dirtyTracker, showFieldErrors, clear, assetUrl, fmtDate, relTime, HARI, table, debounce, initials, svgEl, loading } from '../ui.js';
-import { api, lookups, invalidate } from '../api.js';
+import { api, lookups, invalidate, MOCK } from '../api.js';
 import { can, floorName, STATUS_LABEL, HOURS_MODE, BUILDING_LABEL } from '../state.js';
 import { statusBadge, floorOptions } from '../widgets.js';
 import { MapCanvas, pinPath, nearestOnEdges, nearestNode } from '../mapcanvas.js';
@@ -173,8 +173,22 @@ export default async function tenantEdit(ctx) {
     const saveBtn = btn('Simpan lokasi', { icon: 'save', kind: 'primary', size: 'sm', disabled: true, onClick: saveLoc });
     const cancelBtn = btn('Batal', { size: 'sm', kind: 'ghost', disabled: true, onClick: () => { pending = null; saveBtn.disabled = cancelBtn.disabled = true; draw(); renderInfo(); } });
     const unlinkBtn = btn('Lepas unit', { icon: 'unlink', size: 'sm', disabled: !t.unitShapeId || !canPlace, onClick: () => { pending = Object.assign(pending || {}, { unitShapeId: null }); saveBtn.disabled = cancelBtn.disabled = false; draw(); renderInfo(); } });
+    // door on the linked unit's shop front + spur along the floor to the nearest path (Map3d::reconnect on the server)
+    const autoBtn = btn('Sambung otomatis', { icon: 'route', size: 'sm', disabled: !canPlace || isNew, title: 'Pin pindah ke muka toko unit tertaut (lantai 3D) lalu disambung ke jalur terdekat tanpa menembus toko', onClick: async () => {
+      if (pending) { toast('Simpan lokasi dulu', 'warn'); return; }
+      try {
+        const c = (await api.post('/graph/reconnect', { floor: t.floorId, tenants: [t.id] })).data.connected[0];
+        Object.assign(t, (await api.get('/tenants/' + encodeURIComponent(t.id))).data); orig = clone(t); invalidate('tenants-lite');
+        graph = (await api.get('/graph', { floor: fl.id })).data; graph.nodeBy = Object.fromEntries(graph.nodes.map(n => [n.id, n]));
+        graph.takenUnits = Object.fromEntries(graph.attachments.tenants.filter(x => x.unitShapeId && x.id !== t.id).map(x => [x.unitShapeId, x.name || x.id]));
+        markUnits(); draw(); renderInfo(); ctx.refreshStatus();
+        if (t.x != null) mc.centerOn(t.x, t.y, 520);
+        toast(c && c.viaFloor ? 'Pin di muka toko & tersambung ke jalur' : 'Tersambung garis lurus — pintu unit tidak menghadap koridor di gambar; atur jalurnya di Editor graph', c && c.viaFloor ? 'ok' : 'warn', 8000);
+      } catch (e) { /* toast shown by api */ }
+    } });
+    autoBtn.hidden = MOCK;
     const mapHost = h('div', { style: { height: '560px', position: 'relative' } });
-    p.append(card(null, h('div.stack', h('div.row.wrap', modeSeg, h('span.grow'), unlinkBtn, cancelBtn, saveBtn), mapHost, info), { cls: 'loc-card' }));
+    p.append(card(null, h('div.stack', h('div.row.wrap', modeSeg, h('span.grow'), autoBtn, unlinkBtn, cancelBtn, saveBtn), mapHost, info), { cls: 'loc-card' }));
     const fl = flBy[t.floorId];
     mc = new MapCanvas(mapHost, { floors: [fl], floorId: fl.id, picker: false, height: '100%', layers: { labels: false }, onRender: draw, coords: true });
     ctx.onLeave(() => mc && mc.destroy());

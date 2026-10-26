@@ -11,6 +11,7 @@ const NAV = [
     { path: 'media', label: 'Media', icon: 'image' }] },
   { group: 'Peta', items: [
     { path: 'floors', label: 'Lantai', icon: 'layers' },
+    { path: 'map3d', label: 'Peta 3D', icon: 'box' },
     { path: 'graph', label: 'Editor graph', icon: 'waypoints' },
     { path: 'connectors', label: 'Eskalator & lift', icon: 'arrow-up-down' },
     { path: 'kiosks', label: 'Kiosk', icon: 'monitor' },
@@ -37,6 +38,7 @@ const ROUTES = [
   ['categories', () => import('./pages/categories.js')],
   ['media', () => import('./pages/media.js')],
   ['floors', () => import('./pages/floors.js')],
+  ['map3d', () => import('./pages/map3d.js')],
   ['graph', () => import('./pages/graph.js'), { full: true }],
   ['connectors', () => import('./pages/connectors.js')],
   ['connectors/:id', () => import('./pages/connectors.js')],

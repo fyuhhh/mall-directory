@@ -73,8 +73,22 @@ check('v2 @22:15 WITA: LG escalator schedule (10:00-21:30) closes some routes', 
 
 if (Dlive) {
   console.log('== 2b. live data/directory.json from the WP-A publisher (' + Dlive.meta.version + ')');
-  c = compare(base, costs(NEW, Dlive, { now: NOON, status: { closures: [], edgeOverrides: [], amenityClosures: [] } }));
-  check('publisher snapshot @12:00 WITA valid (GF stairs safely reroutes 310 wheelchair pairs via UG bridge + GF e-walk corridor fix)', c.same >= 2280 && c.reachB.false === 1470 && c.reachB.true === 1449, `${c.same}/${c.pairs}, maxDiff=${c.maxDiff}, keyed edges ${Dlive.graph.edges.filter(e => e[4]).length}`);
+  // Floors redrawn as 3D plans (data/3d/floors.json "frame": "plan", docs/3D.md) have new coordinates and walking
+  // costs by design: a kiosk -> tenant pair with its kiosk or its tenant on such a floor is checked for reachability
+  // only; every other pair must keep the legacy reachability and mostly the legacy costs (≈ 78 % equal after the
+  // GF stairs / e-walk corridor fix, which reroutes some wheelchair pairs via the UG bridge).
+  const plan3d = new Set((() => { try { const r = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/3d/floors.json'), 'utf8')).floors || {}; return Object.keys(r).filter(f => r[f].frame === 'plan'); } catch (e) { return []; } })());
+  const tFloor = {}, kFloor = {}; Dold.tenants.forEach(t => { tFloor[t.id] = t.floor; }); Dold.kiosks.forEach(k => { kFloor[k.id] = k.floor; });
+  const live = costs(NEW, Dlive, { now: NOON, status: { closures: [], edgeOverrides: [], amenityClosures: [] } });
+  const touches = k => plan3d.has(kFloor[k.split('>')[0]]) || plan3d.has(tFloor[k.split('>')[1].split('|')[0]]);
+  const part = (o, onPlan) => { const r = {}; Object.keys(o).forEach(k => { if (touches(k) === onPlan) r[k] = o[k]; }); return r; };
+  c = compare(part(base, false), part(live, false));
+  if (c.pairs) check('publisher snapshot @12:00 WITA valid (GF stairs safely reroutes 310 wheelchair pairs via UG bridge + GF e-walk corridor fix)', c.same / c.pairs >= 0.77 && c.reachB.false === c.reachA.false && c.reachB.true === c.reachA.true, `${c.same}/${c.pairs} legacy costs, reach ${c.reachB.false}/${c.reachB.true} (legacy ${c.reachA.false}/${c.reachA.true}), maxDiff=${c.maxDiff.toFixed(2)}, keyed edges ${Dlive.graph.edges.filter(e => e[4]).length}`);
+  else console.log('  --   every floor is a 3D plan: no pair left to hold to the legacy costs');
+  if (plan3d.size) {
+    const p = compare(part(base, true), part(live, true));
+    check('3D-plan floors (' + [...plan3d].join(', ') + '): every legacy pair from or to them still reachable, default and wheelchair', p.reachB.false === p.reachA.false && p.reachB.true >= p.reachA.true, `${p.reachB.false}/${p.pairs / 2} default, ${p.reachB.true}/${p.pairs / 2} wheelchair (legacy ${p.reachA.true})`);
+  }
 }
 
 console.log('== 3. closures, one-way, reasons');

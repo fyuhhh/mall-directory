@@ -111,11 +111,17 @@ final class Diff
         return $x . '|' . $y . '|' . $e[3];
     }
 
+    /** Ruas di dalam satu lantai (jalan kaki atau tangga); leg konektor selalu berkunci L<id>. */
+    private static function isFloorEdge(array $e): bool
+    {
+        return $e[3] === 'walk' || ($e[3] === 'stairs' && !str_starts_with((string)($e[4] ?? ''), 'L'));
+    }
+
     private static function edges(array $a, array $b, array $spur): array
     {
         $A = []; $B = [];
-        foreach ($a as $e) if ($e[3] === 'walk') $A[self::ekey($e)] = $e;
-        foreach ($b as $e) if ($e[3] === 'walk') $B[self::ekey($e)] = $e;
+        foreach ($a as $e) if (self::isFloorEdge($e)) $A[self::ekey($e)] = $e;
+        foreach ($b as $e) if (self::isFloorEdge($e)) $B[self::ekey($e)] = $e;
         $isSpur = fn($e) => isset($spur[$e[0]]) || isset($spur[$e[1]]);
         $added = 0; $removed = 0; $changed = 0;
         foreach ($B as $k => $e) {
@@ -133,7 +139,7 @@ final class Diff
         $sig = function (array $g): array {
             $o = [];
             foreach ($g['edges'] ?? [] as $e) {
-                if ($e[3] === 'walk') continue;
+                if (self::isFloorEdge($e)) continue;
                 $k = $e[4] ?? null;
                 if ($k === null) { $p = [$e[0], $e[1]]; sort($p); $k = 'pair:' . implode('-', $p); }
                 $o[$k]['types'][] = $e[3];

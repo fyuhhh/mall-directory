@@ -344,6 +344,7 @@ hr.sep { border: 0; border-top: 1px solid var(--line); margin: 14px 0; }
 .ov-edge { stroke: #8C8377; stroke-width: 2.4px; vector-effect: non-scaling-stroke; fill: none; }
 .ov-edge.off { stroke: var(--danger); stroke-dasharray: 6 5; }
 .ov-edge.sched { stroke: #E08A1E; }
+.ov-edge.stairs { stroke: #9A5B2E; stroke-dasharray: 7 2 2 2; }
 .ov-edge.sel { stroke: var(--accent); stroke-width: 4.5px; }
 .ov-edge.new { stroke: var(--ink); }
 .ov-edge-hit { stroke: transparent; stroke-width: 14px; vector-effect: non-scaling-stroke; fill: none; cursor: pointer; }

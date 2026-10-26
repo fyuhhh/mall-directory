@@ -65,7 +65,7 @@
     if (Q.get('k') && Q.get('t')) beacon('qr_scan');
     mapEl = document.createElement('div'); mapEl.className = 'map-holder';
     $('#mapStart').appendChild(mapEl);
-    map = new B.MapView(mapEl, { pad: { l: 30, r: 30, t: 70, b: 30 } });
+    map = new (B.MapView3D || B.MapView)(mapEl, { pad: { l: 30, r: 30, t: 70, b: 30 } });
     map.setKiosk(kiosk);
     if (origin && origin !== kiosk) map.setOrigin(origin);
     buildPlan();
@@ -272,7 +272,7 @@
     var north = northNow();
     if (sens.compass && sens.heading != null && north != null) {
       rot = brg + north - sens.heading; mode = 'compass';
-    } else rot = brg, mode = sens.compass ? 'uncal' : 'map';
+    } else rot = map.screenBearing ? map.screenBearing(lt.here, lt.to) : brg, mode = sens.compass ? 'uncal' : 'map'; // as seen on the (turnable 3D) map
     setArrow(rot);
     var gm = $('#gMode');
     if (mode === 'compass') { gm.className = 'g-mode ok'; gm.innerHTML = B.icon('compass') + t('compassOn') + (sens.motion ? ' · ' + t('pedometerOn') : ''); }
@@ -289,6 +289,9 @@
       var u = 1 / ((D.floorById[leg.floor].unitScale || 1) * cfg.metersPerUnit);
       var e = f.s.end, h = lt.here;
       var pts = [h, e];
+      if (map.faceDirection && lt.here && lt.to && (lt.here.x !== lt.to.x || lt.here.y !== lt.to.y)) { // 3D: walking direction up
+        map.faceDirection(lt.here, lt.to, 0.6).then(function () { update(false); }); // arrow follows the turned map
+      }
       map.fitPoints(pts, 28, 0.6);
     }
   }

@@ -1,0 +1,349 @@
+{
+    "version": 1,
+    "floors": {
+        "lg-ewalk": {
+            "model": "data/3d/ewalk-LG.json",
+            "edits": "data/3d/edits/ewalk-LG.json",
+            "frame": "plan",
+            "view": {
+                "azimuth": -10.5,
+                "polar": 47.0
+            },
+            "legacy": {
+                "toMetres": [
+                    [
+                        0.139834,
+                        -0.04748,
+                        -110.69581
+                    ],
+                    [
+                        0.01135,
+                        0.199611,
+                        -116.987959
+                    ]
+                ],
+                "unitScale": 0.3598,
+                "viewBox": [
+                    0.0,
+                    0.0,
+                    1920.0,
+                    1082.707
+                ],
+                "rebased": "2026-10-21 11:27",
+                "ecc": 0.8595
+            }
+        },
+        "lg-penta": {
+            "model": "data/3d/pentacity-LG.json",
+            "edits": "data/3d/edits/pentacity-LG.json",
+            "frame": "plan",
+            "view": {
+                "azimuth": -11.5,
+                "polar": 46.25
+            },
+            "legacy": {
+                "toMetres": [
+                    [
+                        0.196163,
+                        -0.063481,
+                        -156.930089
+                    ],
+                    [
+                        0.030602,
+                        0.279321,
+                        -180.725819
+                    ]
+                ],
+                "unitScale": 0.3371,
+                "viewBox": [
+                    0.0,
+                    0.0,
+                    1920.0,
+                    1080.0
+                ],
+                "rebased": "2026-10-21 14:11",
+                "ecc": 0.7857
+            }
+        },
+        "ff-penta": {
+            "model": "data/3d/pentacity-FF.json",
+            "edits": "data/3d/edits/pentacity-FF.json",
+            "frame": "plan",
+            "view": {
+                "azimuth": -11.5,
+                "polar": 46.5
+            },
+            "legacy": {
+                "toMetres": [
+                    [
+                        0.183746,
+                        -0.05934,
+                        -153.655098
+                    ],
+                    [
+                        0.027725,
+                        0.262882,
+                        -166.593749
+                    ]
+                ],
+                "unitScale": 0.2173,
+                "viewBox": [
+                    0.0,
+                    0.0,
+                    1920.0,
+                    1080.0
+                ],
+                "rebased": "2026-10-23 17:24",
+                "ecc": 0.8931
+            }
+        },
+        "sf-penta": {
+            "model": "data/3d/pentacity-SF.json",
+            "edits": "data/3d/edits/pentacity-SF.json",
+            "frame": "plan",
+            "view": {
+                "azimuth": -12.25,
+                "polar": 44.75
+            },
+            "legacy": {
+                "toMetres": [
+                    [
+                        0.123809,
+                        -0.042471,
+                        -99.876885
+                    ],
+                    [
+                        0.018729,
+                        0.17062,
+                        -113.22772
+                    ]
+                ],
+                "unitScale": 0.1622,
+                "viewBox": [
+                    0.0,
+                    0.0,
+                    1920.0,
+                    1080.0
+                ],
+                "rebased": "2026-10-23 17:24",
+                "ecc": 0.8526
+            }
+        },
+        "ff-ewalk": {
+            "model": "data/3d/ewalk-FF.json",
+            "edits": "data/3d/edits/ewalk-FF.json",
+            "frame": "plan",
+            "view": {
+                "azimuth": -10.5,
+                "polar": 49.5
+            },
+            "legacy": {
+                "toMetres": [
+                    [
+                        0.124455,
+                        -0.03827,
+                        -90.929005
+                    ],
+                    [
+                        0.017628,
+                        0.189371,
+                        -120.494691
+                    ]
+                ],
+                "unitScale": 0.2273,
+                "viewBox": [
+                    0.0,
+                    0.0,
+                    1920.0,
+                    1080.0
+                ],
+                "rebased": "2026-10-23 17:24",
+                "ecc": 0.5037
+            }
+        },
+        "sf-ewalk": {
+            "model": "data/3d/ewalk-SF.json",
+            "edits": "data/3d/edits/ewalk-SF.json",
+            "frame": "plan",
+            "view": {
+                "azimuth": -11.0,
+                "polar": 45.0
+            },
+            "legacy": {
+                "toMetres": [
+                    [
+                        0.13726,
+                        -0.042107,
+                        -110.739921
+                    ],
+                    [
+                        0.020264,
+                        0.191593,
+                        -127.981031
+                    ]
+                ],
+                "unitScale": 0.2935,
+                "viewBox": [
+                    0.0,
+                    0.0,
+                    1920.0,
+                    1080.0
+                ],
+                "rebased": "2026-10-23 17:24",
+                "ecc": 0.0154
+            }
+        },
+        "ug": {
+            "model": "data/3d/bsb-UG.json",
+            "edits": "data/3d/edits/bsb-UG.json",
+            "frame": "plan",
+            "view": {
+                "azimuth": -68.5,
+                "polar": 53.5
+            },
+            "parts": {
+                "ewalk": {
+                    "model": "data/3d/ewalk-UG.json",
+                    "rot": 0.0,
+                    "shift": [
+                        0.0,
+                        0.0
+                    ],
+                    "toMetres": [
+                        [
+                            0.264863,
+                            -0.967903,
+                            144.990819
+                        ],
+                        [
+                            0.655097,
+                            0.558589,
+                            -1103.198439
+                        ]
+                    ],
+                    "links": 19
+                },
+                "pentacity": {
+                    "model": "data/3d/pentacity-UG.json",
+                    "rot": 54.0389,
+                    "shift": [
+                        -228.247,
+                        -84.484
+                    ],
+                    "toMetres": [
+                        [
+                            0.255688,
+                            -1.030515,
+                            194.093444
+                        ],
+                        [
+                            0.604574,
+                            0.393439,
+                            -947.795425
+                        ]
+                    ],
+                    "links": 31
+                }
+            },
+            "legacy": {
+                "toMetres": [
+                    [
+                        0.265352,
+                        -0.971147,
+                        146.305177
+                    ],
+                    [
+                        0.637939,
+                        0.526845,
+                        -1065.982058
+                    ]
+                ],
+                "unitScale": 1.0,
+                "viewBox": [
+                    0.0,
+                    0.0,
+                    1920.0,
+                    1080.0
+                ],
+                "rebased": "2026-10-23 17:33",
+                "ecc": null
+            }
+        },
+        "gf": {
+            "model": "data/3d/bsb-GF.json",
+            "edits": "data/3d/edits/bsb-GF.json",
+            "frame": "plan",
+            "view": {
+                "azimuth": -56.0,
+                "polar": 39.75
+            },
+            "parts": {
+                "ewalk": {
+                    "model": "data/3d/ewalk-GF.json",
+                    "rot": 0.0,
+                    "shift": [
+                        0.0,
+                        0.0
+                    ],
+                    "toMetres": [
+                        [
+                            0.459087,
+                            -0.895861,
+                            -148.443858
+                        ],
+                        [
+                            0.69435,
+                            0.609557,
+                            -1173.854861
+                        ]
+                    ],
+                    "links": 31
+                },
+                "pentacity": {
+                    "model": "data/3d/pentacity-GF.json",
+                    "rot": 56.3389,
+                    "shift": [
+                        -250.958,
+                        -108.336
+                    ],
+                    "toMetres": [
+                        [
+                            0.217859,
+                            -0.875825,
+                            126.087743
+                        ],
+                        [
+                            0.588162,
+                            0.392646,
+                            -943.989025
+                        ]
+                    ],
+                    "links": 22
+                }
+            },
+            "legacy": {
+                "toMetres": [
+                    [
+                        0.24532,
+                        -0.930566,
+                        137.448042
+                    ],
+                    [
+                        0.667087,
+                        0.496768,
+                        -1086.775337
+                    ]
+                ],
+                "unitScale": 1.0,
+                "viewBox": [
+                    0.0,
+                    0.0,
+                    1920.0,
+                    1080.0
+                ],
+                "rebased": "2026-10-23 17:33",
+                "ecc": null
+            }
+        }
+    }
+}

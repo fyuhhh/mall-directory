@@ -2,7 +2,7 @@
 // · X delete · M merge · K mark connector stop · T attach tenant/kiosk/POI · R route test. Undo/redo as local snapshots,
 // save = one transactional POST /graph/ops batch (autosave 30 s). Local mini-validation: orphan nodes, islands, cross-floor.
 import { h, ic, btn, badge, field, input, select, toggle, toast, dialog, confirmDlg, clear, svgEl, segmented, fmtNum, relTime, dirtyTracker } from '../ui.js';
-import { api, lookups, invalidate } from '../api.js';
+import { api, lookups, invalidate, MOCK } from '../api.js';
 import { can, floorName, BANK_TYPE } from '../state.js';
 import { MapCanvas, nearestOnEdges } from '../mapcanvas.js';
 import { closureDialog, endClosure } from '../widgets.js';
@@ -37,7 +37,9 @@ export default async function graphPage(ctx) {
   const undoBtn = btn('', { icon: 'undo-2', size: 'sm', title: 'Undo (Ctrl+Z)', disabled: true, onClick: doUndo });
   const redoBtn = btn('', { icon: 'redo-2', size: 'sm', title: 'Redo (Ctrl+Shift+Z)', disabled: true, onClick: doRedo });
   const auto = h('input', { type: 'checkbox', checked: true });
-  const bar = h('div.ge-bar', titleEl, statusEl, h('span.grow'), opsEl, h('label.check.small', auto, 'Autosave 30 dtk'), undoBtn, redoBtn, saveBtn);
+  const linkBtn = btn('Sambung pin otomatis', { icon: 'link', size: 'sm', title: 'Sambungkan pin tenant & fasilitas ke jalur terdekat (lewat lantai yang bisa dilalui pada lantai 3D)', disabled: !(can('tenants.place') || canEdit), onClick: () => autoConnect() });
+  linkBtn.hidden = MOCK; // server-side (Map3d::reconnect)
+  const bar = h('div.ge-bar', titleEl, statusEl, h('span.grow'), opsEl, h('label.check.small', auto, 'Autosave 30 dtk'), linkBtn, undoBtn, redoBtn, saveBtn);
   const mapWrap = h('div.ge-map');
   const side = h('aside.ge-side');
   const narrow = h('div.callout.warn', { style: { margin: '16px' }, hidden: true }, ic('monitor'), 'Editor graph butuh layar ≥ 1280 px. Gunakan PC.');
@@ -93,8 +95,8 @@ export default async function graphPage(ctx) {
   }
   function addEdge(a, b, props = {}) {
     if (a === b || findEdge(a, b)) return null;
-    const id = 'e' + seq++; const e = Object.assign({ id, a, b, enabled: true, costOverride: null, scheduleId: null, label: null }, props);
-    G.edges.set(id, e); const op = { op: 'addEdge', tmp: id, a, b }; for (const k of ['enabled', 'costOverride', 'scheduleId', 'label']) if (k in props && props[k] != null && !(k === 'enabled' && props[k] === true)) op[k] = props[k];
+    const id = 'e' + seq++; const e = Object.assign({ id, a, b, enabled: true, costOverride: null, scheduleId: null, label: null, type: 'walk' }, props);
+    G.edges.set(id, e); const op = { op: 'addEdge', tmp: id, a, b }; for (const k of ['enabled', 'costOverride', 'scheduleId', 'label', 'type']) if (k in props && props[k] != null && !(k === 'enabled' && props[k] === true) && !(k === 'type' && props[k] === 'walk')) op[k] = props[k];
     ops.push(op); return id;
   }
   function updateEdge(id, patch) {
@@ -115,7 +117,7 @@ export default async function graphPage(ctx) {
     for (const k of ['tenants', 'amenities']) G.att[k].forEach(x => { if (x.nodeId === id) x.nodeId = null; });
   }
   function splitEdge(e, x, y) {
-    const n = addNode(x, y); const props = { enabled: e.enabled, scheduleId: e.scheduleId, label: e.label };
+    const n = addNode(x, y); const props = { enabled: e.enabled, scheduleId: e.scheduleId, label: e.label, type: e.type || 'walk' };
     const a = e.a, b = e.b; deleteEdge(e.id); addEdge(a, n, props); addEdge(n, b, props); return n;
   }
   function merge(keep, rem) {
@@ -123,7 +125,7 @@ export default async function graphPage(ctx) {
     for (const e of [...G.edges.values()]) {
       if (e.a !== rem && e.b !== rem) continue;
       const other = e.a === rem ? e.b : e.a;
-      if (isTmp(rem)) { deleteEdge(e.id); if (other !== keep) addEdge(keep, other, { enabled: e.enabled, scheduleId: e.scheduleId, label: e.label }); }
+      if (isTmp(rem)) { deleteEdge(e.id); if (other !== keep) addEdge(keep, other, { enabled: e.enabled, scheduleId: e.scheduleId, label: e.label, type: e.type || 'walk' }); }
       else { G.edges.delete(e.id); if (other !== keep && !findEdge(keep, other)) G.edges.set(e.id, Object.assign(e, { a: keep, b: other })); }
     }
     if (isTmp(rem)) { G.nodes.delete(rem); ops = ops.filter(o => !(o.op === 'addNode' && o.tmp === rem)); ops.forEach(o => { if (o.op === 'attach' && o.node === rem) o.node = keep; }); }
@@ -182,7 +184,7 @@ export default async function graphPage(ctx) {
     const closedEdges = new Set(G.edgeClosures.map(c => +c.target.id));
     for (const e of G.edges.values()) {
       const a = G.nodes.get(e.a), b = G.nodes.get(e.b); if (!a || !b) continue;
-      const cls = 'ov-edge' + (!e.enabled || closedEdges.has(e.id) ? ' off' : e.scheduleId ? ' sched' : '') + (sel.edges.has(e.id) ? ' sel' : '') + (isTmp(e.id) ? ' new' : '');
+      const cls = 'ov-edge' + (!e.enabled || closedEdges.has(e.id) ? ' off' : e.scheduleId ? ' sched' : e.type === 'stairs' ? ' stairs' : '') + (sel.edges.has(e.id) ? ' sel' : '') + (isTmp(e.id) ? ' new' : '');
       lg.append(svgEl('line', { x1: a.x, y1: a.y, x2: b.x, y2: b.y, class: cls }), svgEl('line', { x1: a.x, y1: a.y, x2: b.x, y2: b.y, class: 'ov-edge-hit', 'data-hit': 1, 'data-edge': e.id }));
     }
     const r = mc.px(4.6);
@@ -409,6 +411,7 @@ export default async function graphPage(ctx) {
       const id = [...sel.edges][0]; const e = G.edges.get(id); if (!e) return;
       const len = edgeLen(e); const cl = G.edgeClosures.filter(c => +c.target.id === id);
       const en = toggle(e.enabled, 'Edge aktif', { disabled: !canEdit, onchange: ev => { snapshot(); updateEdge(id, { enabled: ev.target.checked }); changed(); } });
+      const st = toggle(e.type === 'stairs', 'Tangga — dilewati mode kursi roda', { disabled: !canEdit, onchange: ev => { snapshot(); updateEdge(id, { type: ev.target.checked ? 'stairs' : 'walk' }); changed(); } });
       const co = input({ type: 'number', step: '0.01', value: e.costOverride ?? '', placeholder: len.toFixed(2), sm: true, disabled: !canEdit });
       co.addEventListener('change', () => { snapshot(); updateEdge(id, { costOverride: co.value === '' ? null : +co.value }); changed(); });
       const sc = select([['', 'Selalu buka'], ...schedules.map(s => [s.id, s.name])], e.scheduleId ?? '', { sm: true, disabled: !canEdit });
@@ -417,7 +420,7 @@ export default async function graphPage(ctx) {
       lb.addEventListener('change', () => { snapshot(); updateEdge(id, { label: lb.value || null }); changed(); });
       side.append(h('h4', ic('spline'), isTmp(id) ? 'Edge baru' : `Edge E${id}`),
         h('dl.kv', { style: { gridTemplateColumns: '110px 1fr' } }, h('dt', 'Node'), h('dd.mono', `${isTmp(e.a) ? 'baru' : 'n' + e.a} ↔ ${isTmp(e.b) ? 'baru' : 'n' + e.b}`), h('dt', 'Panjang × skala'), h('dd', `${len.toFixed(2)} (skala ${unitScale()})`), h('dt', 'Biaya efektif'), h('dd', h('b', (e.costOverride ?? len).toFixed(2)))),
-        en, field('Override biaya', co, { hint: 'Kosong = otomatis panjang × skala.' }), field('Jadwal', sc, { hint: 'Koridor yang tutup malam (mis. akses hotel).' }), field('Label', lb),
+        en, st, field('Override biaya', co, { hint: 'Kosong = otomatis panjang × skala.' }), field('Jadwal', sc, { hint: 'Koridor yang tutup malam (mis. akses hotel).' }), field('Label', lb),
         cl.length ? h('div.stack', { style: { gap: '6px' } }, cl.map(c => h('div.closure-pill', ic('wrench'), `${c.reasonId || 'Ditutup'}`, h('button.btn.sm.ghost', { onclick: async () => { await endClosure(c, 'Koridor'); await load(); } }, 'Buka')))) : null,
         !isTmp(id) && can('status.closures') ? btn('Tutup sementara (live)', { icon: 'wrench', size: 'sm', onClick: async () => { const r = await closureDialog({ type: 'edge', id, label: `Koridor E${id} · ${floorName(flBy[floorId])}` }, { dirs: ['both'] }); if (r) load(); } }) : null,
         canEdit ? btn('Hapus edge', { icon: 'trash-2', size: 'sm', kind: 'danger', onClick: () => { snapshot(); deleteEdge(id); sel.edges.clear(); changed(); } }) : null);
@@ -438,10 +441,29 @@ export default async function graphPage(ctx) {
       ...L('<svg viewBox="0 0 22 14"><line x1="1" y1="7" x2="21" y2="7" stroke="#8C8377" stroke-width="2.4"/></svg>', 'Koridor jalan kaki'),
       ...L('<svg viewBox="0 0 22 14"><line x1="1" y1="7" x2="21" y2="7" stroke="#C0392B" stroke-width="2.4" stroke-dasharray="5 4"/></svg>', 'Nonaktif / ditutup'),
       ...L('<svg viewBox="0 0 22 14"><line x1="1" y1="7" x2="21" y2="7" stroke="#E08A1E" stroke-width="2.4"/></svg>', 'Berjadwal'),
+      ...L('<svg viewBox="0 0 22 14"><line x1="1" y1="7" x2="21" y2="7" stroke="#9A5B2E" stroke-width="2.4" stroke-dasharray="7 2 2 2"/></svg>', 'Tangga (tanpa kursi roda)'),
       ...L('<svg viewBox="0 0 22 14"><circle cx="11" cy="7" r="6" fill="#2F5BEA"/><text x="11" y="10" font-size="8" fill="#fff" text-anchor="middle" font-weight="800">↕</text></svg>', 'Stop eskalator (↕ ↑ ↓)'),
       ...L('<svg viewBox="0 0 22 14"><circle cx="11" cy="7" r="6" fill="#1D1A17"/></svg>', 'Stop lift · jembatan emas'),
       ...L('<svg viewBox="0 0 22 14"><circle cx="11" cy="7" r="4" fill="#C0392B"/></svg>', 'Node yatim'),
       ...L('<svg viewBox="0 0 22 14"><circle cx="11" cy="7" r="4" fill="#F2C230" stroke="#8E6D00"/></svg>', 'Komponen terputus'))));
+  }
+
+  // pins → paths, done on the server (Map3d::reconnect): new door on the shop front, spur through walkable floor, never through a shop
+  async function autoConnect() {
+    if (ops.length) { if (!(await confirmDlg('Simpan perubahan graph dulu sebelum menyambung pin?', { ok: 'Simpan & lanjut' }))) return; if (!(await save())) return; }
+    const v = await dialog({ title: 'Sambung pin otomatis', body: h('div.stack',
+      h('p', `Pin tenant & fasilitas di ${floorName(flBy[floorId])} disambung ke jalur terdekat. Di lantai dengan denah 3D, pin pindah ke muka tokonya dan sambungan mengikuti koridor pada gambar.`),
+      h('p.small.muted', 'Perubahan langsung tersimpan di server (tidak bisa Ctrl+Z); kiosk memakainya setelah Publish.')),
+      actions: [{ label: 'Batal', value: null }, { label: 'Yang belum tersambung', value: 'missing' }, { label: 'Semua pin', kind: 'primary', value: 'all' }] });
+    if (!v) return;
+    const body = { floor: floorId, all: v === 'missing', tenants: v === 'all' ? G.att.tenants.map(t => t.id) : [], amenities: v === 'all' ? G.att.amenities.map(a => a.id) : [] };
+    try {
+      const r = (await api.post('/graph/reconnect', body)).data;
+      const straight = r.connected.filter(x => !x.viaFloor).map(x => x.id);
+      toast(r.connected.length ? `${r.connected.length} pin disambung ke jalur` : 'Semua pin sudah tersambung');
+      if (straight.length) toast(`Tidak menghadap koridor di gambar, disambung garis lurus: ${straight.join(', ')}. Tambahkan jalurnya secara manual.`, 'warn', 12000);
+      ctx.refreshStatus(); invalidate('tenants-lite'); await load();
+    } catch (e) { /* toast shown by api */ }
   }
 
   // integrate with global Ctrl+S / unsaved-leave guard

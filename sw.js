@@ -19,6 +19,7 @@ var SHELL_FILES = [
   'index.html', 'm/index.html', 'offline.html', 'config.js',
   'css/base.css', 'css/kiosk.css', 'css/phone.css', 'css/lite.css', 'css/runtime.css',
   'js/perf.js', 'js/icons.js', 'js/i18n.js', 'js/data.js', 'js/route.js', 'js/search.js', 'js/qr.js', 'js/map.js',
+  'js/scene3d.js', 'js/map3d.js', 'assets/vendor/three.min.js', 'data/3d/floors.json',
   'js/kiosk.js', 'js/phone.js', 'js/telemetry.js', 'js/sync.js', 'js/promos.js',
   'assets/vendor/gsap.min.js', 'assets/vendor/qrcode.min.js',
   'assets/fonts/PlusJakartaSans-latin.woff2', 'assets/fonts/PlusJakartaSans-latin-ext.woff2',

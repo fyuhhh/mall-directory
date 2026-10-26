@@ -22,6 +22,13 @@ window.BSB_CONFIG = {
   // Derived from Pentacity GF corridor length (~280 units ≈ 200 m). Accuracy roughly ±30 %.
   metersPerUnit: 0.7,
 
+  // 3D floors from data/3d/floors.json (js/map3d.js). false = always the 2D SVG maps. Lite devices stay 2D anyway.
+  map3d: true,
+  // true = floors without a 3D model show an empty map ("coming soon") instead of the old 2D drawing.
+  map3dOnly: true,
+  // seconds between checks for renamed tenants / new roof logos saved by the 3D editor (0 = only on load)
+  map3dEditsPollSec: 60,
+
   // Walking model (estimates)
   walkSpeedMps: 1.2,        // average mall walking speed
   strideMeters: 0.7,        // used by the phone pedometer
@@ -42,7 +49,7 @@ window.BSB_CONFIG = {
   attractLang: 'en',
 
   // ---- CMS runtime (WP-C) ----
-  APP_BUILD: '2026.10.7-3', // bump on every kiosk code deploy -> new Service Worker + shell cache (sw.js?v=APP_BUILD)
+  APP_BUILD: '2026.10.23-1', // bump on every kiosk code deploy -> new Service Worker + shell cache (sw.js?v=APP_BUILD)
   API_BASE: 'api',          // relative to the app root; without mod_rewrite use 'api/index.php?r='. Kiosk identity: ?kiosk=<id>&key=<token> on the launch URL.
   POLL_SEC: 60,             // version poll / heartbeat interval (±10 s jitter). Status closures apply within ~70 s.
   TELEMETRY_SEC: 60,        // telemetry flush interval (also flushes at >= 50 queued events)

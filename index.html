@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Direktori e-Walk & Pentacity</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/kiosk.css">
-  <link rel="stylesheet" href="css/runtime.css">
-  <link rel="stylesheet" href="css/lite.css">
+  <link rel="stylesheet" href="css/base.css?v=3d3">
+  <link rel="stylesheet" href="css/kiosk.css?v=3d3">
+  <link rel="stylesheet" href="css/runtime.css?v=3d3">
+  <link rel="stylesheet" href="css/lite.css?v=3d3">
   <script src="config.js"></script>
   <script src="js/perf.js"></script>
   <script>
@@ -96,6 +96,20 @@
         <button type="button" data-z="out"><span data-icon="minus"></span></button>
         <button type="button" data-z="home"><span data-icon="locate-fixed"></span></button>
       </div>
+      <div class="map-ui view3d" id="view3dCtl" hidden>
+        <button type="button" data-v="left" data-i18n-aria="turnLeft"><span data-icon="rotate-ccw"></span></button>
+        <button type="button" data-v="right" data-i18n-aria="turnRight"><span class="flip" data-icon="rotate-ccw"></span></button>
+        <button type="button" data-v="north" data-i18n-aria="northUp"><span data-icon="compass"></span></button>
+        <button type="button" data-v="layers" data-i18n-aria="layers3d" aria-expanded="false"><span data-icon="layers"></span></button>
+      </div>
+      <div class="map-ui layers3d" id="layers3d" hidden>
+        <div class="l3-t" data-i18n="layers3d">Lapisan peta</div>
+        <label><input type="checkbox" data-l="slab" checked><span data-i18n="layerSlab">Lantai mall</span></label>
+        <label><input type="checkbox" data-l="units" checked><span data-i18n="layerUnits">Bangunan toko</span></label>
+        <label><input type="checkbox" data-l="names" checked><span data-i18n="layerNames">Nama toko</span></label>
+        <label><input type="checkbox" data-l="logos" checked><span data-i18n="layerLogos">Logo di atap</span></label>
+        <label><input type="checkbox" data-l="fac" checked><span data-i18n="layerFac">Ikon fasilitas</span></label>
+      </div>
       <div class="map-ui caption" id="caption" hidden><div class="cap-step" id="capStep"></div><div class="cap-txt" id="capTxt"></div></div>
       <div class="map-ui toast" id="toast" hidden></div>
     </main>
@@ -139,6 +153,9 @@
   <script src="js/search.js"></script>
   <script src="js/qr.js"></script>
   <script src="js/map.js"></script>
+  <script src="assets/vendor/three.min.js"></script>
+  <script src="js/scene3d.js"></script>
+  <script src="js/map3d.js"></script>
   <script src="js/telemetry.js"></script>
   <script src="js/sync.js"></script>
   <script src="js/promos.js"></script>
